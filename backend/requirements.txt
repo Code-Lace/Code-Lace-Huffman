@@ -1,0 +1,3 @@
+fastapi==0.110.0        #Lo usaremos para crear la API
+uvicorn==0.28.0
+pydantic==2.10.6
