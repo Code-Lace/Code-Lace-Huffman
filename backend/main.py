@@ -2,7 +2,8 @@ import time
 import random
 from statistics import median
 
-from fastapi import FastAPI, HTTPException
+
+from fastapi import FastAPI, HTTPException, uploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -138,4 +139,29 @@ def visualize_sort(algo_name: str, request: SortRequest):
         "time_ms": round(duration, 4),
         "steps": steps,
         "source": source,
+    }
+
+@app.post("/api/comprimir")
+async def procesar_corpus(file: UploadFile = File(...)):
+    # 1. Leer el archivo recibido desde el frontend
+    contenido_bytes = await file.read()
+    
+    # 2. Decodificar en UTF-8 (esencial para textos en español como el Quijote)
+    texto = contenido_bytes.decode('utf-8')
+    
+    # 3. Medición de tiempo 
+    inicio = time.time()
+    
+    # TODO: Aquí inyectarás tus algoritmos de compresión (Huffman/LZW) cuando los tengas
+    # resultado = mi_algoritmo(texto)
+    
+    fin = time.time()
+    tiempo_ejecucion = fin - inicio
+    
+    # 4. Retornar las métricas al frontend
+    return {
+        "archivo": file.filename,
+        "tamano_original_bytes": len(texto),
+        "estado": "Texto cargado y procesado correctamente",
+        "tiempo_ejecucion_segundos": round(tiempo_ejecucion, 4)
     }

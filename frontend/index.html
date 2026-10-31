@@ -328,6 +328,66 @@
       </main>
     </div>
   </div>
+  <!-- Módulo de carga para el Corpus de Pruebas -->
+<div id="modulo-compresion" class="upload-section" style="margin: 20px 0; padding: 20px; border: 1px solid #444; border-radius: 8px;">
+    <h3>Pruebas de Compresión (Archivos .txt)</h3>
+    
+    <input type="file" id="archivoCorpus" accept=".txt" style="margin-bottom: 10px;">
+    <button onclick="subirArchivoTxt()" style="padding: 5px 15px; cursor: pointer;">Procesar Texto</button>
+    
+    <!-- Aquí se inyectarán las respuestas JSON del backend -->
+    <div id="resultados-compresion" style="margin-top: 15px; font-family: monospace; background: #f4f4f4; padding: 10px; border-radius: 5px; color: #333; display: none;">
+    </div>
+</div>
+
+<script>
+async function subirArchivoTxt() {
+    const input = document.getElementById('archivoCorpus');
+    const resultadosDiv = document.getElementById('resultados-compresion');
+    
+    // Validar que el usuario seleccionó un archivo
+    if (input.files.length === 0) {
+        resultadosDiv.style.display = 'block';
+        resultadosDiv.innerHTML = '<span style="color: red;">Por favor, selecciona un archivo .txt de Project Gutenberg primero.</span>';
+        return;
+    }
+
+    const archivo = input.files[0];
+    
+    // FormData prepara el archivo para ser enviado como "multipart/form-data"
+    const formData = new FormData();
+    formData.append('file', archivo); // El nombre 'file' debe coincidir exactamente con el parámetro de FastAPI
+
+    resultadosDiv.style.display = 'block';
+    resultadosDiv.innerHTML = 'Subiendo archivo al backend y procesando...';
+
+    try {
+        // Enviar la petición POST al backend (Ajusta el puerto 8000 si tu uvicorn usa otro)
+        const respuesta = await fetch('http://127.0.0.1:8000/api/comprimir', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!respuesta.ok) {
+            throw new Error(`Error en el servidor: ${respuesta.status}`);
+        }
+
+        // Parsear el JSON devuelto por main.py
+        const datos = await respuesta.json();
+        
+        // Imprimir las métricas en la interfaz
+        resultadosDiv.innerHTML = `
+            <strong>Archivo recibido:</strong> ${datos.archivo} <br>
+            <strong>Tamaño en bytes:</strong> ${datos.tamano_original_bytes} <br>
+            <strong>Estado:</strong> ${datos.estado} <br>
+            <strong>Tiempo de ejecución:</strong> ${datos.tiempo_ejecucion_segundos} segundos
+        `;
+    } catch (error) {
+        console.error('Fallo en la comunicación:', error);
+        resultadosDiv.innerHTML = '<span style="color: red;">Error de conexión. Asegúrate de que FastAPI (main.py) esté ejecutándose en segundo plano.</span>';
+    }
+}
+</script>
 
   <!-- Tooltip Flotante para Gráficas -->
   <div id="chart-tooltip" class="chart-tooltip hidden"></div>
