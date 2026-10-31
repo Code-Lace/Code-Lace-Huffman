@@ -3,7 +3,7 @@ import random
 from statistics import median
 
 
-from fastapi import FastAPI, uploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 

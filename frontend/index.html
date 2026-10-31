@@ -363,7 +363,7 @@ async function subirArchivoTxt() {
 
     try {
         // Enviar la petición POST al backend (Ajusta el puerto 8000 si tu uvicorn usa otro)
-        const respuesta = await fetch('http://127.0.0.1:8000/api/comprimir', {
+        const respuesta = await fetch('https://code-lace-huffman.onrender.com/api/comprimir', {
             method: 'POST',
             body: formData
         });
@@ -393,7 +393,7 @@ async function subirArchivoTxt() {
   <div id="chart-tooltip" class="chart-tooltip hidden"></div>
 
   <script>
-    const API_BASE_URL = "http://127.0.0.1:8000";
+   const API_BASE_URL = "https://code-lace-huffman.onrender.com";
 
     const ALGORITHMS = [
       {
@@ -564,7 +564,7 @@ async function subirArchivoTxt() {
       renderScenarioChart(null);
 
       try {
-        const response = await fetch('https://code-lace-rep.onrender.com/api/benchmark');
+        const response = await fetch(`${API_BASE_URL}/api/benchmark`);
         if (!response.ok) throw new Error("No se pudo completar el benchmark.");
         const result = await response.json();
         if (requestId !== benchmarkRequest) return;
@@ -928,7 +928,7 @@ async function subirArchivoTxt() {
       updateVisualizerUI();
 
       try {
-       const response = await fetch(`https://code-lace-rep.onrender.com/api/visualize/${encodeURIComponent(selectedAlgoId)}`, {
+       const response = await fetch(`${API_BASE_URL}/api/visualize/${encodeURIComponent(selectedAlgoId)}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: currentArray }),
