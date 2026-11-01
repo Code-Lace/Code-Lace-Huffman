@@ -328,17 +328,42 @@
       </main>
     </div>
   </div>
-  <!-- Módulo de carga para el Corpus de Pruebas -->
-<div id="modulo-compresion" class="upload-section" style="margin: 20px 0; padding: 20px; border: 1px solid #444; border-radius: 8px;">
-    <h3>Pruebas de Compresión (Archivos .txt)</h3>
-    
-    <input type="file" id="archivoCorpus" accept=".txt" style="margin-bottom: 10px;">
-    <button onclick="subirArchivoTxt()" style="padding: 5px 15px; cursor: pointer;">Procesar Texto</button>
-    
-    <!-- Aquí se inyectarán las respuestas JSON del backend -->
-    <div id="resultados-compresion" style="margin-top: 15px; font-family: monospace; background: #f4f4f4; padding: 10px; border-radius: 5px; color: #333; display: none;">
-    </div>
-</div>
+<!-- Módulo de carga para el Corpus de Pruebas -->
+  <div id="modulo-compresion" class="chart-card" style="margin: 20px auto; max-width: 1368px; width: calc(100% - 32px);">
+      <div class="chart-heading">
+          <h3 class="chart-title">Pruebas de Compresión (Archivos .txt)</h3>
+      </div>
+      
+      <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+          <!-- Input de archivo oculto con un label estilizado como botón -->
+          <label for="archivoCorpus" class="btn btn-ghost" style="cursor: pointer; margin: 0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Elegir archivo
+          </label>
+          <input type="file" id="archivoCorpus" accept=".txt" style="display: none;" onchange="document.getElementById('nombre-archivo').textContent = this.files[0] ? this.files[0].name : 'No se ha seleccionado ningún archivo'">
+          
+          <!-- Texto dinámico que muestra el nombre del archivo -->
+          <span id="nombre-archivo" style="font-size: 13px; color: var(--text-dim); font-family: var(--font-body); flex: 1;">
+              No se ha seleccionado ningún archivo
+          </span>
+          
+          <button onclick="subirArchivoTxt()" class="btn btn-primary" style="margin: 0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Procesar Texto
+          </button>
+      </div>
+      
+      <!-- Aquí se inyectarán las respuestas JSON del backend -->
+      <div id="resultados-compresion" style="margin-top: 20px; font-family: var(--font-mono); background: rgba(7, 4, 17, 0.82); padding: 16px; border-radius: 10px; border: 1px solid rgba(168, 85, 247, 0.2); color: var(--text); font-size: 13px; display: none; line-height: 1.6;">
+      </div>
+  </div>
 
 <script>
 async function subirArchivoTxt() {
