@@ -93,6 +93,10 @@ function renderSidebarNav() {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
         Visualizador de Algoritmos
       </a>
+      <button type="button" class="nav-item ${activeView === 'huffman' ? 'nav-item-active' : ''}" onclick="switchView('huffman'); toggleSidebar(false);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        Comparador Huffman
+      </button>
     </div>
 
     <div class="sidebar-section-label" style="font-size: 10px; font-weight: 700; color: #a855f7; text-transform: uppercase; letter-spacing: 0.08em; padding: 6px 12px;">Divide y Vencerás</div>
@@ -113,15 +117,26 @@ function renderSidebarNav() {
       </button>
     `).join("")}
 
-    <div style="margin: 16px 10px; border-top: 1px solid rgba(168,85,247,0.2);"></div>
-
-    <div style="padding: 0 10px 16px 10px;">
-      <button class="nav-item ${activeView === 'huffman' ? 'nav-item-active' : ''}" onclick="switchView('huffman'); toggleSidebar(false);" style="background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); border-radius: 10px; justify-content: center; padding: 12px; font-weight: 600; text-align: center; color: #fff;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-        Comparador Huffman (.txt)
-      </button>
-    </div>
   `;
+}
+
+function toggleSidebar(open) {
+  const sidebar = document.getElementById("sidebar");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  if (!sidebar || !backdrop) {
+    throw new Error("No se encontraron los elementos de la barra lateral.");
+  }
+
+  const shouldOpen = typeof open === "boolean"
+    ? open
+    : sidebar.classList.contains("sidebar-closed");
+
+  sidebar.classList.toggle("sidebar-open", shouldOpen);
+  sidebar.classList.toggle("sidebar-closed", !shouldOpen);
+  backdrop.classList.toggle("hidden", !shouldOpen);
+
+  const menuButton = document.querySelector(".menu-btn");
+  if (menuButton) menuButton.setAttribute("aria-expanded", String(shouldOpen));
 }
 
 async function loadDashboardBenchmark() {
