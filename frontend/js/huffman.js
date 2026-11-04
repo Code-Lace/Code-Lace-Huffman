@@ -4,7 +4,7 @@ async function subirArchivoTxt() {
   
   if (!input || input.files.length === 0) {
     resultadosDiv.classList.remove('hidden');
-    resultadosDiv.innerHTML = '<span style="color: #fb7185;">por favor, selecciona un archivo .txt de project gutenberg primero.</span>';
+    resultadosDiv.innerHTML = '<span style="color: #fb7185;">Por favor, selecciona un archivo .txt de Project Gutenberg primero.</span>';
     return;
   }
 
@@ -13,7 +13,7 @@ async function subirArchivoTxt() {
   formData.append('file', archivo);
 
   resultadosDiv.classList.remove('hidden');
-  resultadosDiv.innerHTML = 'subiendo archivo al backend y procesando huffman...';
+  resultadosDiv.innerHTML = 'Subiendo archivo al backend y procesando Huffman...';
 
   try {
     const respuesta = await fetch(`${API_BASE_URL}/api/comprimir`, {
@@ -21,17 +21,17 @@ async function subirArchivoTxt() {
       body: formData
     });
 
-    if (!respuesta.ok) throw new Error(`error en el servidor: ${respuesta.status}`);
+    if (!respuesta.ok) throw new Error(`Error en el servidor: ${respuesta.status}`);
 
     const datos = await respuesta.json();
     resultadosDiv.innerHTML = `
-      <strong>archivo recibido:</strong> ${datos.archivo} <br>
-      <strong>tamaño original:</strong> ${datos.tamano_original_bytes} bytes <br>
-      <strong>estado:</strong> ${datos.estado} <br>
-      <strong>tiempo de ejecución:</strong> ${datos.tiempo_ejecucion_segundos} segundos
+      <strong>Archivo recibido:</strong> ${datos.archivo} <br>
+      <strong>Tamaño original:</strong> ${datos.tamano_original_bytes} bytes <br>
+      <strong>Estado:</strong> ${datos.estado} <br>
+      <strong>Tiempo de ejecución:</strong> ${datos.tiempo_ejecucion_segundos} segundos
     `;
   } catch (error) {
-    console.error('fallo en la comunicación:', error);
-    resultadosDiv.innerHTML = '<span style="color: #fb7185;">error de conexión con el backend de huffman en python. asegúrate de que uvicorn esté corriendo.</span>';
+    console.error('Fallo en la comunicación:', error);
+    resultadosDiv.innerHTML = '<span style="color: #fb7185;">Error de conexión con el backend de Huffman en Python. Asegúrate de que uvicorn esté corriendo.</span>';
   }
 }

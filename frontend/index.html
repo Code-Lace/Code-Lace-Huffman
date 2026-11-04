@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>code & lace - análisis de algoritmos</title>
+  <title>Code & Lace - Análisis de Algoritmos</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -18,11 +18,11 @@
     <aside id="sidebar" class="sidebar sidebar-closed">
       <div class="sidebar-logo">
         <div class="sidebar-logo-icon" style="background: transparent; box-shadow: none;">
-          <img src="assets/img/Code-Lace-Logo.png" alt="Logo" style="width: 40px; height: 40px; object-fit: contain; border-radius: 50%;">
+          <img src="assets/img/Code-Lace-Logo.png" alt="Logo" style="width: 80px; height: 80px; object-fit: contain; border-radius: 80%;">
         </div>
         <div>
-          <div class="sidebar-logo-title">code & lace</div>
-          <div class="sidebar-logo-sub">análisis de algoritmos</div>
+          <div class="sidebar-logo-title">Code & Lace</div>
+          <div class="sidebar-logo-sub">Análisis de Algoritmos</div>
         </div>
         <button class="sidebar-close-btn" onclick="toggleSidebar(false)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -31,7 +31,7 @@
         </button>
       </div>
       <nav class="sidebar-nav" id="sidebar-nav"></nav>
-      <div class="sidebar-footer"><span>code & lace v2.0</span></div>
+      <div class="sidebar-footer"><span>Code & Lace v2.0</span></div>
     </aside>
 
     <!-- Contenedor Principal -->
@@ -46,26 +46,26 @@
           </button>
           <div class="topbar-logo" style="gap: 10px;">
             <img src="assets/img/Code-Lace-Logo.png" alt="Logo" style="width: 26px; height: 26px; object-fit: contain;">
-            <span>code & lace</span>
+            <span>Code & Lace</span>
           </div>
         </div>
 
         <!-- Pestañas Principales -->
         <div class="topbar-tabs">
           <button id="tab-dashboard" class="topbar-tab topbar-tab-active" onclick="switchView('dashboard')">
-            inicio / dashboard
+            Inicio / Dashboard
           </button>
           <button id="tab-visualizer" class="topbar-tab" onclick="switchView('visualizer')">
-            visualizador de algoritmos
+            Visualizador de Algoritmos
           </button>
           <button id="tab-huffman" class="topbar-tab" onclick="switchView('huffman')">
-            comparador huffman
+            Comparador Huffman
           </button>
         </div>
 
-        <div id="topbar-right-dashboard" class="topbar-right topbar-right-info"><span>actividad 5 • técnica voraz</span></div>
+        <div id="topbar-right-dashboard" class="topbar-right topbar-right-info"><span>Actividad 5 • Técnica Voraz</span></div>
         <div id="topbar-right-visualizer" class="topbar-right hidden"><div id="algo-quickselect" class="algo-quickselect"></div></div>
-        <div id="topbar-right-huffman" class="topbar-right topbar-right-info hidden"><span>módulo de compresión .txt</span></div>
+        <div id="topbar-right-huffman" class="topbar-right topbar-right-info hidden"><span>Módulo de Compresión .txt</span></div>
       </header>
 
       <!-- Contenido de las Vistas -->
@@ -73,35 +73,35 @@
         <!-- VISTA 1: DASHBOARD -->
         <div id="view-dashboard" class="dashboard-grid">
           <div class="dashboard-intro">
-            <img class="dashboard-intro-logo" src="assets/img/Code-Lace-Logo.png" alt="Code Lace Logo">
-            <h2 class="dashboard-title">code & lace • análisis de algoritmos</h2>
-            <p style="color: var(--text-muted); font-size: 14px; max-width: 600px; margin: 0 auto;">
-              plataforma interactiva para el estudio de algoritmos de ordenamiento, técnicas voraces (huffman) y árboles de expansión mínima.
-            </p>
-          </div>
+          <img class="dashboard-intro-logo" src="assets/img/Code-Lace-Logo.png" alt="Code Lace Logo">
+          <h2 class="dashboard-title" style="font-size: 26px; text-align: center; width: 100%;">Code & Lace · Análisis de Algoritmos</h2>
+          <p style="color: var(--text-muted); font-size: 14px; max-width: 650px; text-align: center; margin: 0 auto;">
+            Plataforma interactiva para el estudio de algoritmos de ordenamiento, técnicas voraces (Huffman) y árboles de expansión mínima.
+          </p>
+        </div>
 
-          <div class="dashboard-header"><h3 class="dashboard-title" style="font-size: 18px;">comparativa de algoritmos de ordenamiento</h3></div>
+          <div class="dashboard-header"><h3 class="dashboard-title" style="font-size: 18px;">Comparativa de Algoritmos de Ordenamiento</h3></div>
           <div id="algo-cards-grid" class="algo-cards-grid"></div>
 
           <div class="chart-card">
             <div class="chart-heading">
-              <h3 class="chart-title">tiempo medido por tamaño (ms)</h3>
-              <span id="benchmark-status" class="benchmark-status" aria-live="polite">midiendo...</span>
+              <h3 class="chart-title">Tiempo Medido por Tamaño (ms)</h3>
+              <span id="benchmark-status" class="benchmark-status" aria-live="polite">Midiendo...</span>
             </div>
             <div class="chart-container" id="bar-chart-container"></div>
           </div>
 
           <div class="chart-card">
-            <h3 class="chart-title">tiempo por distribución (n=100)</h3>
+            <h3 class="chart-title">Tiempo por Distribución (n=100)</h3>
             <div class="chart-container" id="scenario-chart-container"></div>
           </div>
 
           <div class="chart-card complexity-table-card">
-            <h3 class="chart-title">tabla de complejidades</h3>
+            <h3 class="chart-title">Tabla de Complejidades</h3>
             <div class="table-wrapper">
               <table class="complexity-table">
                 <thead>
-                  <tr><th>algoritmo</th><th>categoría</th><th>mejor caso</th><th>caso promedio</th><th>peor caso</th><th>espacio</th></tr>
+                  <tr><th>Algoritmo</th><th>Categoría</th><th>Mejor Caso</th><th>Caso Promedio</th><th>Peor Caso</th><th>Espacio</th></tr>
                 </thead>
                 <tbody id="complexity-table-body"></tbody>
               </table>
@@ -109,120 +109,129 @@
           </div>
         </div>
 
-        <!-- VISTA 2: VISUALIZADOR DE ALGORITMOS (Con opción de 1 o 2 algoritmos en paralelo) -->
-        <div id="view-visualizer" class="visualizer-layout hidden">
-          <div class="info-panel">
-            <!-- Selector de modo (1 o 2 algoritmos) -->
-            <div style="background: rgba(124,58,237,0.15); padding: 10px; border-radius: 10px; border: 1px solid rgba(168,85,247,0.3); display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 11px; font-weight: 600; color: var(--purple-light); text-transform: uppercase;">modo de visualización</label>
-              <select id="mode-select" onchange="handleModeChange(this.value)" style="background: var(--bg); color: var(--text); border: 1px solid var(--card-border); padding: 6px; border-radius: 6px; font-family: var(--font-body); font-size: 12px;">
-                <option value="single">un algoritmo</option>
-                <option value="dual">comparar dos algoritmos</option>
+        <!-- VISTA 2: VISUALIZADOR DE ALGORITMOS -->
+        <div id="view-visualizer" class="visualizer-layout hidden" style="grid-template-columns: 320px 1fr;">
+          <div class="info-panel" style="gap: 14px;">
+            <div style="background: rgba(124,58,237,0.15); padding: 12px; border-radius: 10px; border: 1px solid rgba(168,85,247,0.3); display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 11px; font-weight: 600; color: var(--purple-light); text-transform: uppercase;">Modo de Visualización</label>
+              <select id="mode-select" onchange="handleModeChange(this.value)" style="background: var(--bg); color: var(--text); border: 1px solid var(--card-border); padding: 8px; border-radius: 6px; font-family: var(--font-body); font-size: 12px;">
+                <option value="single">Un algoritmo</option>
+                <option value="dual">Comparar dos algoritmos</option>
               </select>
             </div>
 
-            <div id="panel-algo-1" style="display: flex; flex-direction: column; gap: 12px;">
-              <div class="info-panel-header">
-                <span id="viz-info-dot" class="info-dot"></span>
-                <div>
-                  <h2 id="viz-algo-name" class="info-algo-name"></h2>
-                  <span id="viz-algo-badge"></span>
-                </div>
-              </div>
-              <p id="viz-algo-desc" class="info-description"></p>
-              <div class="complexity-grid">
-                <div class="complexity-row"><span class="complexity-label">mejor</span><code id="viz-best" class="complexity-value"></code></div>
-                <div class="complexity-row"><span class="complexity-label">promedio</span><code id="viz-avg" class="complexity-value"></code></div>
-                <div class="complexity-row"><span class="complexity-label">peor</span><code id="viz-worst" class="complexity-value"></code></div>
-                <div class="complexity-row"><span class="complexity-label">espacio</span><code id="viz-space" class="complexity-value"></code></div>
-              </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase;">Algoritmo Principal</label>
+              <select id="select-algo-1" onchange="handleAlgoChange(1, this.value)" style="background: var(--bg); color: var(--text); border: 1px solid var(--card-border); padding: 8px; border-radius: 6px; font-family: var(--font-body); font-size: 13px;"></select>
             </div>
 
-            <!-- Panel secundario para el segundo algoritmo si está en modo dual -->
-            <div id="panel-algo-2" class="hidden" style="border-top: 1px dashed rgba(168,85,247,0.3); padding-top: 12px; margin-top: 4px; display: flex; flex-direction: column; gap: 12px;">
-              <div class="info-panel-header">
+            <div class="info-panel-header">
+              <span id="viz-info-dot" class="info-dot"></span>
+              <div>
+                <h2 id="viz-algo-name" class="info-algo-name"></h2>
+                <span id="viz-algo-badge"></span>
+              </div>
+            </div>
+            <p id="viz-algo-desc" class="info-description"></p>
+            <div class="complexity-grid">
+              <div class="complexity-row"><span class="complexity-label">Mejor</span><code id="viz-best" class="complexity-value"></code></div>
+              <div class="complexity-row"><span class="complexity-label">Promedio</span><code id="viz-avg" class="complexity-value"></code></div>
+              <div class="complexity-row"><span class="complexity-label">Peor</span><code id="viz-worst" class="complexity-value"></code></div>
+              <div class="complexity-row"><span class="complexity-label">Espacio</span><code id="viz-space" class="complexity-value"></code></div>
+            </div>
+
+            <div id="wrapper-algo-2" class="hidden" style="border-top: 1px dashed rgba(168,85,247,0.3); padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase;">Segundo Algoritmo a Comparar</label>
+              <select id="select-algo-2" onchange="handleAlgoChange(2, this.value)" style="background: var(--bg); color: var(--text); border: 1px solid var(--card-border); padding: 8px; border-radius: 6px; font-family: var(--font-body); font-size: 13px;"></select>
+              <div class="info-panel-header" style="margin-top: 4px;">
                 <span id="viz-info-dot-2" class="info-dot" style="background: #06b6d4;"></span>
                 <div>
-                  <h2 id="viz-algo-name-2" class="info-algo-name">Quick Sort</h2>
-                  <span id="viz-algo-badge-2"><span class="badge-dv">Divide y Vencerás</span></span>
+                  <h2 id="viz-algo-name-2" class="info-algo-name"></h2>
+                  <span id="viz-algo-badge-2"></span>
                 </div>
               </div>
               <div class="complexity-grid">
-                <div class="complexity-row"><span class="complexity-label">promedio</span><code id="viz-avg-2" class="complexity-value">Θ(n log n)</code></div>
+                <div class="complexity-row"><span class="complexity-label">Promedio</span><code id="viz-avg-2" class="complexity-value"></code></div>
               </div>
             </div>
 
             <div class="step-counter">
-              <span>paso</span><span id="viz-step-current" class="step-number">0</span><span>de</span><span id="viz-step-total" class="step-number">0</span>
+              <span>Paso</span><span id="viz-step-current" class="step-number">0</span><span>de</span><span id="viz-step-total" class="step-number">0</span>
             </div>
             <div class="progress-track"><div id="viz-progress-fill" class="progress-fill" style="width: 0%"></div></div>
             <div class="legend">
-              <div class="legend-item"><span class="legend-dot" style="background: #06b6d4"></span><span>comparando</span></div>
-              <div class="legend-item"><span class="legend-dot" style="background: #f97316"></span><span>intercambiando</span></div>
-              <div class="legend-item"><span class="legend-dot" style="background: #4ade80"></span><span>ordenado</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #06b6d4"></span><span>Comparando</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #f97316"></span><span>Intercambiando</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background: #4ade80"></span><span>Ordenado</span></div>
             </div>
           </div>
 
-          <div class="viz-area">
-            <div id="viz-done-badge" class="done-badge hidden">¡ordenamiento completado!</div>
+          <div class="viz-area" style="display: flex; flex-direction: column; gap: 0;">
+            <div id="viz-done-badge" class="done-badge hidden">¡Ordenamiento completado!</div>
             
-            <!-- Contenedor de barras (Soporta 1 o 2 visualizaciones divididas) -->
-            <div id="viz-canvas-wrapper" style="flex: 1; display: flex; flex-direction: column; min-height: 280px; position: relative;">
-              <div id="bars-container" class="bars-container" style="flex: 1;"></div>
-              <div id="bars-container-2" class="bars-container hidden" style="flex: 1; border-top: 1px dashed rgba(168,85,247,0.2);"></div>
+            <div id="canvas-split-container" style="flex: 1; display: flex; min-height: 260px; background: rgba(11,7,23,0.3);">
+              <div id="bars-container" class="bars-container" style="flex: 1; height: 100%;"></div>
+              <div id="bars-container-2" class="bars-container hidden" style="flex: 1; height: 100%; border-left: 1px dashed rgba(168,85,247,0.25);"></div>
             </div>
 
             <div class="controls-panel">
               <div class="controls-row">
-                <button class="btn btn-primary" onclick="handleGenerate()">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-                  generar
-                </button>
+                <button class="btn btn-primary" onclick="handleGenerate()">Generar</button>
                 <button id="btn-step-back" class="btn btn-ghost" onclick="handleStepBack()" disabled>&larr;</button>
-                <button id="btn-play-pause" class="btn btn-play" onclick="handlePlayPause()">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> iniciar
-                </button>
+                <button id="btn-play-pause" class="btn btn-play" onclick="handlePlayPause()">Iniciar</button>
                 <button id="btn-step-forward" class="btn btn-ghost" onclick="handleStepForward()" disabled>&rarr;</button>
-                <button id="btn-reset" class="btn btn-ghost" onclick="handleReset()" disabled>reiniciar</button>
+                <button id="btn-reset" class="btn btn-ghost" onclick="handleReset()" disabled>Reiniciar</button>
               </div>
 
               <div class="controls-sliders">
                 <div class="slider-group">
-                  <label class="slider-label">velocidad</label>
+                  <label class="slider-label">Velocidad</label>
                   <input id="slider-speed" type="range" min="10" max="1000" value="922" class="slider" oninput="handleSpeedChange(this.value)" />
-                  <span id="slider-speed-label" class="slider-value">normal</span>
+                  <span id="slider-speed-label" class="slider-value">Normal</span>
                 </div>
                 <div class="slider-group">
-                  <label class="slider-label"><span id="slider-size-label">tamaño: 30</span></label>
+                  <label class="slider-label"><span id="slider-size-label">Tamaño: 30</span></label>
                   <input id="slider-size" type="range" min="5" max="35" value="30" class="slider" oninput="handleSizeChange(this.value)" />
                 </div>
               </div>
             </div>
 
-            <!-- Panel de Código Python extraído del backend -->
-            <section class="source-panel" aria-label="código python">
-              <div class="source-panel-header">
-                <div class="source-panel-title">
-                  <span class="source-panel-dots"><span></span><span></span><span></span></span>
-                  <span>python source (.py)</span>
+            <div id="python-sources-wrapper" style="display: grid; grid-template-columns: 1fr; gap: 10px; padding: 12px; background: rgba(7,4,17,0.6);">
+              <section class="source-panel" aria-label="código python 1" style="margin: 0; max-height: 200px;">
+                <div class="source-panel-header">
+                  <div class="source-panel-title">
+                    <span class="source-panel-dots"><span></span><span></span><span></span></span>
+                    <span id="source-title-1">Python Source (Algoritmo 1)</span>
+                  </div>
+                  <span id="source-status-1" class="source-status">Esperando</span>
                 </div>
-                <span id="source-status" class="source-status">esperando algoritmo</span>
-              </div>
-              <pre class="source-code"><code id="source-code">genera una lista para cargar el código python.</code></pre>
-            </section>
+                <pre class="source-code"><code id="source-code-1">Genera una lista para cargar el código.</code></pre>
+              </section>
+
+              <section id="source-panel-wrapper-2" class="source-panel hidden" aria-label="código python 2" style="margin: 0; max-height: 200px;">
+                <div class="source-panel-header">
+                  <div class="source-panel-title">
+                    <span class="source-panel-dots"><span></span><span></span><span></span></span>
+                    <span id="source-title-2">Python Source (Algoritmo 2)</span>
+                  </div>
+                  <span id="source-status-2" class="source-status">Esperando</span>
+                </div>
+                <pre class="source-code"><code id="source-code-2">Genera una lista para cargar el código.</code></pre>
+              </section>
+            </div>
           </div>
         </div>
 
         <!-- VISTA 3: COMPARADOR HUFFMAN (.TXT) -->
         <div id="view-huffman" class="hidden" style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
           <div class="chart-card">
-            <h3 class="chart-title">+ pruebas de compresión de archivos .txt (huffman) +</h3>
+            <h3 class="chart-title">+ Pruebas de Compresión de Archivos .txt (Huffman) +</h3>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; line-height: 1.5;">
-              selecciona un archivo de texto o corpus de pruebas (project gutenberg) para ejecutar la técnica voraz de huffman, generar la codificación binaria óptima y calcular las métricas de compresión.
+              Selecciona un archivo de texto o corpus de pruebas (Project Gutenberg) para ejecutar la técnica voraz de Huffman, generar la codificación binaria óptima y calcular las métricas de compresión.
             </p>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
               <input type="file" id="archivoCorpus" accept=".txt" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
-              <button class="btn btn-primary" onclick="subirArchivoTxt()">procesar texto</button>
+              <button class="btn btn-primary" onclick="subirArchivoTxt()">Procesar Texto</button>
             </div>
             
             <div id="resultados-compresion" class="hidden" style="margin-top: 20px; font-family: var(--font-mono); background: var(--bg-2); padding: 16px; border-radius: 10px; border: 1px solid var(--card-border); color: var(--text); font-size: 13px; line-height: 1.6;">
@@ -235,320 +244,9 @@
 
   <div id="chart-tooltip" class="chart-tooltip hidden"></div>
 
-  <!-- Scripts de la aplicación -->
+  <!-- Scripts Modularizados -->
+  <script>const API_BASE_URL = "https://code-lace-huffman.onrender.com";</script>
+  <script src="js/visualizer.js"></script>
   <script src="js/huffman.js"></script>
-  <script>
-    const API_BASE_URL = "https://code-lace-huffman.onrender.com";
-
-    const ALGORITHMS = [
-      { id: "merge", name: "Merge Sort", nameShort: "Merge", category: "divide-conquer", bestCase: "Ω(n log n)", avgCase: "Θ(n log n)", worstCase: "O(n log n)", space: "O(n)", description: "Divide el arreglo a la mitad recursivamente y combina las mitades ordenadas.", color: "#a855f7" },
-      { id: "quick", name: "Quick Sort", nameShort: "Quick", category: "divide-conquer", bestCase: "Ω(n log n)", avgCase: "Θ(n log n)", worstCase: "O(n²)", space: "O(log n) prom.; O(n) peor", description: "Elige un pivote, particiona el arreglo y ordena las particiones recursivamente.", color: "#c084fc" },
-      { id: "selection", name: "Selection Sort", nameShort: "Selection", category: "brute-force", bestCase: "Ω(n²)", avgCase: "Θ(n²)", worstCase: "O(n²)", space: "O(1)", description: "Busca el mínimo en la parte no ordenada y lo coloca en su posición correcta.", color: "#f97316" },
-      { id: "bubble", name: "Bubble Sort", nameShort: "Bubble", category: "brute-force", bestCase: "Ω(n)", avgCase: "Θ(n²)", worstCase: "O(n²)", space: "O(1)", description: "Compara pares adyacentes repetidamente e intercambia si están en orden incorrecto.", color: "#fb923c" },
-      { id: "insertion", name: "Insertion Sort", nameShort: "Insertion", category: "brute-force", bestCase: "Ω(n)", avgCase: "Θ(n²)", worstCase: "O(n²)", space: "O(1)", description: "Construye la parte ordenada insertando cada elemento en su posición correcta.", color: "#f59e0b" },
-      { id: "gnome", name: "Gnome Sort", nameShort: "Gnome", category: "brute-force", bestCase: "Ω(n)", avgCase: "Θ(n²)", worstCase: "O(n²)", space: "O(1)", description: "Similar a Insertion Sort pero mueve elementos hacia atrás usando intercambios.", color: "#10b981" },
-      { id: "exchange", name: "Exchange Sort", nameShort: "Exchange", category: "brute-force", bestCase: "Ω(n²)", avgCase: "Θ(n²)", worstCase: "O(n²)", space: "O(1)", description: "Compara cada elemento con todos los siguientes e intercambia si es necesario.", color: "#06b6d4" },
-      { id: "stooge", name: "Stooge Sort", nameShort: "Stooge", category: "brute-force", bestCase: "Ω(n^2.71)", avgCase: "Θ(n^2.71)", worstCase: "O(n^2.71)", space: "O(log n)", description: "Algoritmo recursivo muy ineficiente que ordena solapando tres partes del arreglo.", color: "#e879f9", maxSize: 12 }
-    ];
-
-    let activeView = "dashboard";
-    let visualizerMode = "single"; // 'single' o 'dual'
-    let selectedAlgoId = "bubble";
-    let secondaryAlgoId = "quick";
-    let arraySize = 30;
-    let speed = 80;
-    let steps = [];
-    let steps2 = [];
-    let stepIdx = 0;
-    let isPlaying = false;
-    let intervalId = null;
-    let currentArray = [];
-    let pythonSource = [];
-    let backendDuration = 0;
-    let apiError = "";
-    let isGenerating = false;
-    let generationRequest = 0;
-
-    function badgeHTML(category) {
-      return category === "divide-conquer"
-        ? '<span class="badge-dv">Divide y Vencerás</span>'
-        : '<span class="badge-fb">Fuerza Bruta</span>';
-    }
-
-    function renderDashboard() {
-      const cardsGrid = document.getElementById("algo-cards-grid");
-      cardsGrid.innerHTML = ALGORITHMS.map(algo => `
-        <div class="algo-card" style="border-color: ${algo.color}55" onclick="selectAlgoAndOpenVisualizer('${algo.id}')">
-          <div class="algo-card-dot" style="background: ${algo.color}; color: ${algo.color}"></div>
-          <div>
-            <div class="algo-card-name">${algo.name}</div>
-            ${badgeHTML(algo.category)}
-            <div class="algo-card-complexity">${algo.avgCase}</div>
-          </div>
-        </div>
-      `).join("");
-
-      const tbody = document.getElementById("complexity-table-body");
-      tbody.innerHTML = ALGORITHMS.map(algo => `
-        <tr onclick="selectAlgoAndOpenVisualizer('${algo.id}')" style="cursor: pointer;">
-          <td><span class="table-algo-dot" style="background: ${algo.color}"></span>${algo.name}</td>
-          <td>${badgeHTML(algo.category)}</td>
-          <td><code>${algo.bestCase}</code></td>
-          <td><code>${algo.avgCase}</code></td>
-          <td><code>${algo.worstCase}</code></td>
-          <td><code>${algo.space}</code></td>
-        </tr>
-      `).join("");
-
-      loadDashboardBenchmark();
-    }
-
-    async function loadDashboardBenchmark() {
-      const status = document.getElementById("benchmark-status");
-      status.textContent = "midiendo implementaciones python...";
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/benchmark`);
-        if (!response.ok) throw new Error();
-        const result = await response.json();
-        status.textContent = `mediana de ${result.rounds} ejecuciones · ${result.line_series.length} algoritmos`;
-      } catch (error) {
-        status.textContent = "benchmark no disponible (inicia backend)";
-      }
-    }
-
-    function renderSidebarAndQuickSelect() {
-      const qs = document.getElementById("algo-quickselect");
-      qs.innerHTML = ALGORITHMS.map(a => {
-        const active = selectedAlgoId === a.id;
-        const style = active ? `border-color:${a.color}; background:${a.color}22; color:${a.color};` : "";
-        return `<button class="algo-chip ${active ? 'algo-chip-active' : ''}" style="${style}" onclick="selectAlgoAndOpenVisualizer('${a.id}')">${a.nameShort}</button>`;
-      }).join("");
-    }
-
-    function toggleSidebar(force) {
-      const sb = document.getElementById("sidebar");
-      const bd = document.getElementById("sidebar-backdrop");
-      const next = typeof force === "boolean" ? force : !sb.classList.contains("sidebar-open");
-      sb.classList.toggle("sidebar-open", next);
-      sb.classList.toggle("sidebar-closed", !next);
-      bd.classList.toggle("hidden", !next);
-    }
-
-    function switchView(view) {
-      activeView = view;
-      document.getElementById("view-dashboard").classList.toggle("hidden", view !== "dashboard");
-      document.getElementById("view-visualizer").classList.toggle("hidden", view !== "visualizer");
-      document.getElementById("view-huffman").classList.toggle("hidden", view !== "huffman");
-
-      document.getElementById("tab-dashboard").classList.toggle("topbar-tab-active", view === "dashboard");
-      document.getElementById("tab-visualizer").classList.toggle("topbar-tab-active", view === "visualizer");
-      document.getElementById("tab-huffman").classList.toggle("topbar-tab-active", view === "huffman");
-
-      document.getElementById("topbar-right-dashboard").classList.toggle("hidden", view !== "dashboard");
-      document.getElementById("topbar-right-visualizer").classList.toggle("hidden", view !== "visualizer");
-      document.getElementById("topbar-right-huffman").classList.toggle("hidden", view !== "huffman");
-
-      if (view === "visualizer") {
-        updateVisualizerUI();
-        if (steps.length === 0 && !isGenerating) handleGenerate();
-      }
-    }
-
-    function selectAlgoAndOpenVisualizer(id) {
-      selectedAlgoId = id;
-      stopPlaying();
-      steps = [];
-      steps2 = [];
-      stepIdx = 0;
-      pythonSource = [];
-      switchView("visualizer");
-    }
-
-    function handleModeChange(mode) {
-      visualizerMode = mode;
-      const panel2 = document.getElementById("panel-algo-2");
-      const container2 = document.getElementById("bars-container-2");
-      if (mode === "dual") {
-        panel2.classList.remove("hidden");
-        container2.classList.remove("hidden");
-      } else {
-        panel2.classList.add("hidden");
-        container2.classList.add("hidden");
-      }
-      handleGenerate();
-    }
-
-    function generateRandomArray(n) {
-      return Array.from({ length: n }, () => Math.floor(Math.random() * 96) + 4);
-    }
-
-    function escapeHTML(value) {
-      return String(value).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-    }
-
-    function renderSourceCode(activeLine) {
-      const code = document.getElementById("source-code");
-      if (pythonSource.length === 0) {
-        code.textContent = apiError || (isGenerating ? "Cargando código Python del backend..." : "Genera una lista para cargar el código Python.");
-        return;
-      }
-      code.innerHTML = pythonSource.map((line, index) =>
-        `<span class="code-line ${index + 1 === activeLine ? 'code-line-active' : ''}" data-line="${index + 1}"><span class="code-line-number">${String(index + 1).padStart(2, "0")}</span><span>${escapeHTML(line) || " "}</span></span>`
-      ).join("");
-    }
-
-    function updateVisualizerUI() {
-      const algo = ALGORITHMS.find(a => a.id === selectedAlgoId) || ALGORITHMS[0];
-      const algo2 = ALGORITHMS.find(a => a.id === secondaryAlgoId) || ALGORITHMS[1];
-
-      document.getElementById("viz-info-dot").style.background = algo.color;
-      document.getElementById("viz-algo-name").textContent = algo.name;
-      document.getElementById("viz-algo-badge").innerHTML = badgeHTML(algo.category);
-      document.getElementById("viz-algo-desc").textContent = algo.description;
-      document.getElementById("viz-best").textContent = algo.bestCase;
-      document.getElementById("viz-avg").textContent = algo.avgCase;
-      document.getElementById("viz-worst").textContent = algo.worstCase;
-      document.getElementById("viz-space").textContent = algo.space;
-
-      if (visualizerMode === "dual") {
-        document.getElementById("viz-algo-name-2").textContent = algo2.name;
-        document.getElementById("viz-algo-badge-2").innerHTML = badgeHTML(algo2.category);
-        document.getElementById("viz-avg-2").textContent = algo2.avgCase;
-      }
-
-      const step = steps[stepIdx] || { array: currentArray, comparing: [], swapping: [], sorted: [] };
-      const step2 = steps2[stepIdx] || { array: currentArray, comparing: [], swapping: [], sorted: [] };
-      const arr = step.array;
-      const maxVal = Math.max(...arr, 1);
-
-      document.getElementById("viz-step-current").textContent = steps.length > 0 ? stepIdx + 1 : 0;
-      document.getElementById("viz-step-total").textContent = steps.length;
-      const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
-      document.getElementById("viz-progress-fill").style.width = `${progress}%`;
-
-      const isDone = steps.length > 0 && stepIdx === steps.length - 1;
-      document.getElementById("viz-done-badge").classList.toggle("hidden", !isDone);
-
-      document.getElementById("btn-step-back").disabled = stepIdx === 0 || steps.length === 0;
-      document.getElementById("btn-step-forward").disabled = stepIdx >= steps.length - 1 || steps.length === 0;
-      document.getElementById("btn-reset").disabled = stepIdx === 0;
-
-      // Renderizar barras principal
-      const barsContainer = document.getElementById("bars-container");
-      if (barsContainer.children.length !== arr.length) {
-        barsContainer.innerHTML = arr.map(() => '<div class="bar-wrapper"><div class="sort-bar"></div></div>').join("");
-      }
-      arr.forEach((val, idx) => {
-        const h = Math.max(4, (val / maxVal) * 94);
-        let cls = "sort-bar";
-        if (step.sorted.includes(idx)) cls += " bar-sorted";
-        else if (step.swapping.includes(idx)) cls += " bar-swapping";
-        else if (step.comparing.includes(idx)) cls += " bar-comparing";
-        const wrapper = barsContainer.children[idx];
-        wrapper.title = val;
-        wrapper.firstElementChild.className = cls;
-        wrapper.firstElementChild.style.height = `${h}%`;
-      });
-
-      // Renderizar barras secundarias (si está en modo dual)
-      if (visualizerMode === "dual") {
-        const barsContainer2 = document.getElementById("bars-container-2");
-        const arr2 = step2.array || currentArray;
-        if (barsContainer2.children.length !== arr2.length) {
-          barsContainer2.innerHTML = arr2.map(() => '<div class="bar-wrapper"><div class="sort-bar"></div></div>').join("");
-        }
-        arr2.forEach((val, idx) => {
-          const h = Math.max(4, (val / maxVal) * 94);
-          let cls = "sort-bar";
-          if (step2.sorted.includes(idx)) cls += " bar-sorted";
-          else if (step2.swapping.includes(idx)) cls += " bar-swapping";
-          else if (step2.comparing.includes(idx)) cls += " bar-comparing";
-          const wrapper = barsContainer2.children[idx];
-          wrapper.title = val;
-          wrapper.firstElementChild.className = cls;
-          wrapper.firstElementChild.style.height = `${h}%`;
-        });
-      }
-
-      renderSourceCode(step.line);
-    }
-
-    async function fetchAlgorithmSteps(algoId, dataArray) {
-      const response = await fetch(`${API_BASE_URL}/api/visualize/${encodeURIComponent(algoId)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: dataArray })
-      });
-      if (!response.ok) throw new Error("Fallo al conectar con backend.");
-      return await response.json();
-    }
-
-    async function handleGenerate() {
-      stopPlaying();
-      const requestId = ++generationRequest;
-      isGenerating = true;
-      currentArray = generateRandomArray(arraySize);
-      steps = [];
-      steps2 = [];
-      stepIdx = 0;
-      pythonSource = [];
-      updateVisualizerUI();
-
-      try {
-        const payload1 = await fetchAlgorithmSteps(selectedAlgoId, currentArray);
-        if (requestId !== generationRequest) return;
-        steps = payload1.steps;
-        pythonSource = payload1.source;
-        backendDuration = payload1.time_ms;
-
-        if (visualizerMode === "dual") {
-          const payload2 = await fetchAlgorithmSteps(secondaryAlgoId, currentArray);
-          if (requestId !== generationRequest) return;
-          steps2 = payload2.steps;
-        }
-
-        updateVisualizerUI();
-      } catch (error) {
-        apiError = "Backend Python no disponible. Inicia uvicorn main:app.";
-        updateVisualizerUI();
-      } finally {
-        isGenerating = false;
-        updateVisualizerUI();
-      }
-    }
-
-    function startPlaying() {
-      isPlaying = true;
-      updateVisualizerUI();
-      intervalId = setInterval(() => {
-        if (stepIdx >= steps.length - 1) stopPlaying();
-        else { stepIdx++; updateVisualizerUI(); }
-      }, speed);
-    }
-
-    function stopPlaying() {
-      isPlaying = false;
-      if (intervalId) clearInterval(intervalId);
-      intervalId = null;
-      updateVisualizerUI();
-    }
-
-    function handlePlayPause() {
-      if (steps.length === 0) { handleGenerate(); return; }
-      if (stepIdx >= steps.length - 1) stepIdx = 0;
-      if (isPlaying) stopPlaying(); else startPlaying();
-    }
-
-    function handleStepForward() { if (stepIdx < steps.length - 1) { stepIdx++; updateVisualizerUI(); } }
-    function handleStepBack() { if (stepIdx > 0) { stepIdx--; updateVisualizerUI(); } }
-    function handleReset() { stopPlaying(); stepIdx = 0; updateVisualizerUI(); }
-    function handleSpeedChange(val) { speed = Math.max(2, 1002 - Number(val)); }
-    function handleSizeChange(val) { arraySize = Number(val); handleGenerate(); }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      renderDashboard();
-      renderSidebarAndQuickSelect();
-    });
-  </script>
 </body>
 </html>
