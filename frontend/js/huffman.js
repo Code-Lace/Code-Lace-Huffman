@@ -1,3 +1,7 @@
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:8000"
+  : "https://code-lace-huffman.onrender.com";
+
 async function subirArchivoTxt() {
   const input = document.getElementById('archivoCorpus');
   const resultadosDiv = document.getElementById('resultados-compresion');
@@ -77,6 +81,6 @@ async function subirArchivoTxt() {
     `;
   } catch (error) {
     console.error('Fallo en la comunicación:', error);
-    resultadosDiv.innerHTML = '<span style="color: #fb7185;">Error de conexión con el backend de Huffman en Python. Asegúrate de que uvicorn esté corriendo.</span>';
+    resultadosDiv.innerHTML = '<span style="color: #fb7185;">Error de conexión con el backend en la nube. Si estás usando la versión en Render, recuerda que el servidor puede tardar unos segundos en despertar tras inactividad. Intenta de nuevo.</span>';
   }
 }
