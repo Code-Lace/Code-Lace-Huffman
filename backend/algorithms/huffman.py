@@ -68,18 +68,3 @@ def comprimir_huffman(texto: str) -> dict:
         "codigos": codigos,
         "texto_codificado": texto_codificado[:500]
     }
-
-'''#anterior
-    # 5. Calcular métricas teóricas de compresión
-    # Asumiendo 8 bits por carácter en la codificación original
-    bits_originales = len(texto) * 8 
-    bits_comprimidos = sum(frecuencias[char] * len(codigo) for char, codigo in codigos.items())
-    
-    tasa_compresion = (1 - (bits_comprimidos / bits_originales)) * 100 if bits_originales > 0 else 0
-
-    return {
-        "tasa_compresion_porcentaje": round(tasa_compresion, 2),
-        "bits_originales": bits_originales,
-        "bits_comprimidos": bits_comprimidos,
-        "nodos_unicos": len(frecuencias)
-    }'''
