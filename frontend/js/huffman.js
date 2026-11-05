@@ -1,7 +1,3 @@
-const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? "http://localhost:8000"
-  : "https://code-lace-huffman.onrender.com";
-
 async function subirArchivoTxt() {
   const input = document.getElementById('archivoCorpus');
   const resultadosDiv = document.getElementById('resultados-compresion');
