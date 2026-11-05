@@ -16,7 +16,7 @@ async function subirArchivoTxt() {
   resultadosDiv.innerHTML = 'Subiendo archivo al backend y procesando Huffman...';
 
   try {
-    const respuesta = await fetch(`${API_BASE_URL}/api/comprimir`, {
+    const respuesta = await fetch('https://code-lace-huffman.onrender.com/api/comprimir', {
       method: 'POST',
       body: formData
     });
