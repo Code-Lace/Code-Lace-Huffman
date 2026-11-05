@@ -37,7 +37,7 @@ async function subirArchivoTxt() {
             <div style="text-align: right; background: rgba(74, 222, 128, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(74, 222, 128, 0.3);">
                 <div style="color: var(--green); font-weight: bold; font-size: 15px;">${huffmanData.tasa_compresion}</div>
                 <div style="font-size: 11px; color: var(--text-dim);">
-                    De ${huffmanData.bits_originales.toLocaleString()} a ${huffmanData.bits_comprimidos.toLocaleString()} bits
+                   De ${(huffmanData?.bits_originales ?? 0).toLocaleString()} a ${(huffmanData?.bits_comprimidos ?? 0).toLocaleString()} bits
                 </div>
             </div>
         </div>
