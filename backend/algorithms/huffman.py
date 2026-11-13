@@ -45,26 +45,47 @@ def comprimir_huffman(texto: str) -> dict:
         
         heapq.heappush(heap, nodo_fusion)
 
-    # 4. Generar el diccionario de códigos binarios
+# Justo antes del return en comprimir_huffman:
     raiz = heap[0] if heap else None
     codigos = generar_codigos(raiz)
-
-    # 5. Calcular métricas teóricas de compresión
-    bits_originales = len(texto) * 8 
-    bits_comprimidos = sum(frecuencias[char] * len(codigo) for char, codigo in codigos.items())
     
-    tasa_compresion = (1 - (bits_comprimidos / bits_originales)) * 100 if bits_originales > 0 else 0
+    # Generar el árbol para D3.js
+    arbol_d3 = tree_to_dict(raiz)
 
-    # -> AGREGA ESTA LÍNEA PARA EL FRAGMENTO VISUAL <-
     texto_codificado = "".join([codigos[c] for c in texto])
 
-    # -> ACTUALIZA EL DICCIONARIO DE RETORNO <-
     return {
-        "tasa_compresion": f"{round(tasa_compresion, 2)}% de reducción",
+        "tasa_compresion": f"{round(tasa_compresion, 2)}% de reducci",
         "bits_originales": bits_originales,
         "bits_comprimidos": bits_comprimidos,
         "nodos_unicos": len(frecuencias),
         "frecuencias": dict(frecuencias),
         "codigos": codigos,
-        "texto_codificado": texto_codificado[:500]
+        "texto_codificado": texto_codificado[:500],
+        "arbol_d3": arbol_d3  # <--- Agrega esta línea
     }
+
+def tree_to_dict(node):
+    if node is None:
+        return None
+    
+    # Manejar saltos de línea y retornos de carro visualmente
+    char_name = ""
+    if node.caracter is not None:
+        char_name = repr(node.caracter).replace("'", "")
+        
+    result = {
+        "name": char_name,
+        "value": node.frecuencia
+    }
+    
+    children = []
+    if getattr(node, 'izq', None):
+        children.append(tree_to_dict(node.izq))
+    if getattr(node, 'der', None):
+        children.append(tree_to_dict(node.der))
+        
+    if children:
+        result["children"] = children
+        
+    return result

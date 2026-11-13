@@ -27,6 +27,83 @@ let isGenerating = false;
 let generationRequest = 0;
 let benchmarkData = null;
 
+function renderHuffmanTree(treeData) {
+    const container = d3.select("#tree-container");
+    container.selectAll("*").remove(); // Limpiar renderizados previos
+
+    if (!treeData) return;
+
+    const width = document.getElementById("tree-container").clientWidth || 800;
+    const height = 500;
+    const margin = { top: 40, right: 20, bottom: 40, left: 20 };
+
+    // Configurar SVG con Zoom
+    const svg = container.append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .call(d3.zoom().scaleExtent([0.1, 4]).on("zoom", (event) => {
+            g.attr("transform", event.transform);
+        }))
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const g = svg.append("g"); 
+
+    // Configurar el layout del árbol jerárquico
+    const root = d3.hierarchy(treeData);
+    const treeLayout = d3.tree().nodeSize([40, 60]); 
+    treeLayout(root);
+
+    // Centrar el árbol horizontalmente
+    g.attr("transform", `translate(${width / 2}, 40)`);
+
+    // Dibujar Enlaces (líneas)
+    g.selectAll(".link")
+        .data(root.links())
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", d3.linkVertical()
+            .x(d => d.x)
+            .y(d => d.y)
+        )
+        .style("fill", "none")
+        .style("stroke", "rgba(168, 85, 247, 0.4)")
+        .style("stroke-width", "2px");
+
+    // Crear Nodos
+    const node = g.selectAll(".node")
+        .data(root.descendants())
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x},${d.y})`);
+
+    // Círculos de los nodos (Morado para ramas, Cyan para hojas)
+    node.append("circle")
+        .attr("r", 14)
+        .style("fill", d => d.children ? "#7c3aed" : "#06b6d4")
+        .style("stroke", "rgba(255, 255, 255, 0.8)")
+        .style("stroke-width", "2px");
+
+    // Frecuencia (Número arriba del nodo)
+    node.append("text")
+        .attr("dy", "-1.4em")
+        .attr("text-anchor", "middle")
+        .style("fill", "#c084fc")
+        .style("font-size", "11px")
+        .style("font-family", "var(--font-mono)")
+        .text(d => d.data.value);
+
+    // Carácter (Letra dentro del nodo, solo para hojas)
+    node.append("text")
+        .attr("dy", "0.3em")
+        .attr("text-anchor", "middle")
+        .style("fill", "#fff")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .style("font-family", "var(--font-mono)")
+        .text(d => d.children ? "" : d.data.name);
+}
+
 function badgeHTML(category) {
   return category === "divide-conquer"
     ? '<span class="badge-dv">Divide y Vencerás</span>'

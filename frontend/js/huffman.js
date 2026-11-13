@@ -1,6 +1,8 @@
 async function subirArchivoTxt() {
   const input = document.getElementById('archivoCorpus');
   const resultadosDiv = document.getElementById('resultados-compresion');
+
+  
   
   if (!input || input.files.length === 0) {
     resultadosDiv.classList.remove('hidden');
@@ -25,6 +27,10 @@ async function subirArchivoTxt() {
 
     const datos = await respuesta.json();
     const huffmanData = datos.huffman;
+
+if (huffmanData.arbol_d3) {
+        renderHuffmanTree(huffmanData.arbol_d3);
+    }
 
     resultadosDiv.innerHTML = `
         <div style="margin-bottom: 16px; border-bottom: 1px dashed rgba(168,85,247,0.3); padding-bottom: 12px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;">
@@ -74,7 +80,16 @@ async function subirArchivoTxt() {
                 ${huffmanData.texto_codificado}...
             </p>
         </div>
+        <div class="chart-card" style="margin-top: 20px;">
+            <h3 class="chart-title">Representación del Árbol de Huffman</h3>
+            <div id="tree-container" style="width: 100%; height: 500px; overflow: hidden; background: rgba(11,7,23,0.3); border-radius: 8px; border: 1px dashed rgba(168,85,247,0.3); cursor: grab;"></div>
+        </div>
     `;
+
+    if (huffmanData.arbol_d3) {
+        renderHuffmanTree(huffmanData.arbol_d3);
+    }
+
   } catch (error) {
     console.error('Fallo en la comunicación:', error);
     resultadosDiv.innerHTML = '<span style="color: #fb7185;">Error de conexión con el backend en la nube. Si estás usando la versión en Render, recuerda que el servidor puede tardar unos segundos en despertar tras inactividad. Intenta de nuevo.</span>';
