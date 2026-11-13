@@ -28,9 +28,11 @@ async function subirArchivoTxt() {
     const datos = await respuesta.json();
     const huffmanData = datos.huffman;
 
-if (huffmanData.arbol_d3) {
+ if (huffmanData.arbol_d3) {
         renderHuffmanTree(huffmanData.arbol_d3);
     }
+    renderArbolHuffmanBinario(huffmanData);
+    renderizarArbolMST(huffmanData);
 
     resultadosDiv.innerHTML = `
         <div style="margin-bottom: 16px; border-bottom: 1px dashed rgba(168,85,247,0.3); padding-bottom: 12px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;">
@@ -96,12 +98,151 @@ if (huffmanData.arbol_d3) {
     if (huffmanData.arbol_d3) {
         renderHuffmanTree(huffmanData.arbol_d3);
     }
+    renderArbolHuffmanBinario(huffmanData);
     renderizarArbolMST(huffmanData);
 
   } catch (error) {
     console.error('Fallo en la comunicación:', error);
     resultadosDiv.innerHTML = '<span style="color: #fb7185;">Error de conexión con el backend en la nube. Si estás usando la versión en Render, recuerda que el servidor puede tardar unos segundos en despertar tras inactividad. Intenta de nuevo.</span>';
   }
+}
+
+// ===== Árbol binario de Huffman (D3) =====
+
+// Reconstruye el árbol a partir de los códigos: '0' = izquierda, '1' = derecha
+function construirArbolDesdeCodigos(huffmanData) {
+  const codigos = huffmanData.codigos || {};
+  const frecs = huffmanData.frecuencias || {};
+  const raiz = { name: '', value: 0, bit: '', children: [] };
+
+  for (const [char, code] of Object.entries(codigos)) {
+    let nodo = raiz;
+    for (const bit of code) {
+      let hijo = nodo.children.find(c => c.bit === bit);
+      if (!hijo) {
+        hijo = { name: '', value: 0, bit, children: [] };
+        nodo.children.push(hijo);
+      }
+      nodo = hijo;
+    }
+    nodo.name = char;
+    nodo.value = frecs[char] ?? 0;
+  }
+
+  // Ordena (0 izquierda, 1 derecha) y suma frecuencias en nodos internos
+  const procesar = (n) => {
+    if (n.children.length === 0) { delete n.children; return n.value; }
+    n.children.sort((a, b) => a.bit.localeCompare(b.bit));
+    n.value = n.children.reduce((s, c) => s + procesar(c), 0);
+    return n.value;
+  };
+  procesar(raiz);
+  return raiz;
+}
+
+function etiquetaCaracter(c) {
+  if (c === ' ') return '␣';
+  if (c === '\n') return '\\n';
+  if (c === '\r') return '\\r';
+  if (c === '\t') return '\\t';
+  return c;
+}
+
+function renderArbolHuffmanBinario(huffmanData) {
+  const el = document.getElementById('tree-container');
+  if (!el) return;
+  el.innerHTML = '';
+
+  if (!huffmanData || !huffmanData.codigos || Object.keys(huffmanData.codigos).length === 0) {
+    el.innerHTML = '<span style="color: var(--text-dim); padding: 12px; display: block;">No hay códigos para graficar el árbol.</span>';
+    return;
+  }
+
+  const data = construirArbolDesdeCodigos(huffmanData);
+  const width = el.clientWidth || 800;
+  const height = el.clientHeight || 500;
+
+  const root = d3.hierarchy(data);
+  d3.tree().nodeSize([26, 70])(root);
+
+  const svg = d3.select(el).append('svg')
+    .attr('width', '100%')
+    .attr('height', '100%');
+  const g = svg.append('g');
+
+  // Enlaces
+  g.selectAll('.huff-link')
+    .data(root.links())
+    .enter().append('path')
+    .attr('class', 'huff-link')
+    .attr('d', d3.linkVertical().x(d => d.x).y(d => d.y))
+    .style('fill', 'none')
+    .style('stroke', 'rgba(168, 85, 247, 0.45)')
+    .style('stroke-width', '1.5px');
+
+  // Etiquetas 0 / 1 en cada rama
+  g.selectAll('.huff-bit')
+    .data(root.links())
+    .enter().append('text')
+    .attr('x', d => (d.source.x + d.target.x) / 2)
+    .attr('y', d => (d.source.y + d.target.y) / 2)
+    .attr('text-anchor', 'middle')
+    .style('fill', '#4ade80')
+    .style('font-size', '10px')
+    .style('font-family', 'var(--font-mono)')
+    .text(d => d.target.data.bit);
+
+  // Nodos
+  const nodo = g.selectAll('.huff-node')
+    .data(root.descendants())
+    .enter().append('g')
+    .attr('class', 'huff-node')
+    .attr('transform', d => `translate(${d.x},${d.y})`);
+
+  nodo.append('title')
+    .text(d => d.children
+      ? `Nodo interno · frecuencia ${d.data.value}`
+      : `'${etiquetaCaracter(d.data.name)}' · frecuencia ${d.data.value}`);
+
+  nodo.append('circle')
+    .attr('r', d => d.children ? 8 : 11)
+    .style('fill', d => d.children ? '#7c3aed' : '#06b6d4')
+    .style('stroke', 'rgba(255,255,255,0.8)')
+    .style('stroke-width', '1.5px');
+
+  // Carácter dentro de las hojas
+  nodo.filter(d => !d.children).append('text')
+    .attr('dy', '0.35em')
+    .attr('text-anchor', 'middle')
+    .style('fill', '#fff')
+    .style('font-size', '11px')
+    .style('font-weight', 'bold')
+    .style('font-family', 'var(--font-mono)')
+    .text(d => etiquetaCaracter(d.data.name));
+
+  // Frecuencia debajo de las hojas
+  nodo.filter(d => !d.children).append('text')
+    .attr('dy', '2.3em')
+    .attr('text-anchor', 'middle')
+    .style('fill', '#c084fc')
+    .style('font-size', '9px')
+    .style('font-family', 'var(--font-mono)')
+    .text(d => d.data.value);
+
+  // Zoom / arrastre
+  const zoom = d3.zoom()
+    .scaleExtent([0.05, 4])
+    .on('zoom', (event) => g.attr('transform', event.transform));
+  svg.call(zoom);
+
+  // Ajuste inicial para que todo el árbol quepa en el cuadro
+  const nodos = root.descendants();
+  const minX = d3.min(nodos, d => d.x);
+  const maxX = d3.max(nodos, d => d.x);
+  const maxY = d3.max(nodos, d => d.y);
+  const k = Math.min(1, width / (maxX - minX + 60), height / (maxY + 80));
+  const tx = width / 2 - ((minX + maxX) / 2) * k;
+  svg.call(zoom.transform, d3.zoomIdentity.translate(tx, 30).scale(k));
 }
 
 // --- Módulo Gráfico de Árbol de Expansión Mínima (MST / CL-12) ---

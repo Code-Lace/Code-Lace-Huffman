@@ -51,8 +51,11 @@ def comprimir_huffman(texto: str) -> dict:
     
     # Generar el árbol para D3.js
     arbol_d3 = tree_to_dict(raiz)
-
     texto_codificado = "".join([codigos[c] for c in texto])
+
+    bits_originales = len(texto) * 8
+    bits_comprimidos = sum(freq * len(codigos[char]) for char, freq in frecuencias.items())
+    tasa_compresion = (1 - (bits_comprimidos / bits_originales)) * 100 if bits_originales > 0 else 0
 
     return {
         "tasa_compresion": f"{round(tasa_compresion, 2)}% de reducci",

@@ -232,16 +232,14 @@
               Selecciona un archivo de texto o corpus de pruebas (Project Gutenberg) para ejecutar la técnica voraz de Huffman, generar la codificación binaria óptima y calcular las métricas de compresión.
             </p>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-              <input type="file" id="archivoCorpus" accept=".txt" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
-              <button class="btn btn-primary" onclick="subirArchivoTxt()">Procesar Texto</button>
+            <!-- Agregamos el evento onchange -->
+            <input type="file" id="archivoCorpus" accept=".txt" onchange="subirArchivoTxt()" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
+  
+       <!-- Puedes mantener el botón como alternativa o eliminarlo -->
+  <button class="btn btn-primary" onclick="subirArchivoTxt()">Procesar Texto</button>
             </div>
             
-            <div id="resultados-compresion" class="hidden" style="margin-top: 20px; font-family: var(--font-mono); background: var(--bg-2); padding: 16px; border-radius: 10px; border: 1px solid var(--card-border); color: var(--text); font-size: 13px; line-height: 1.6;">
-            <div class="chart-card" style="margin-top: 20px;">
-    <h3 class="chart-title">Representación del Árbol de Huffman</h3>
-    <!-- Contenedor del lienzo D3 -->
-    <div id="tree-container" style="width: 100%; height: 500px; overflow: hidden; background: rgba(11,7,23,0.3); border-radius: 8px; border: 1px dashed rgba(168,85,247,0.3); cursor: grab;"></div>
-</div>
+            <div id="resultados-compresion" class="hidden" style="margin-top: 20px; font-family: var(--font-mono); background: var(--bg-2); padding: 16px; border-radius: 10px; border: 1px solid var(--card-border); color: var(--text); font-size: 13px; line-height: 1.6;"></div>
           </div>
         </div>
       </main>
@@ -254,7 +252,5 @@
   <script>const API_BASE_URL = "https://code-lace-huffman.onrender.com";</script>
   <script src="js/visualizer.js"></script>
   <script src="js/huffman.js"></script>
-  <script src="js/visualizer.js"></script>
-<script src="js/huffman.js"></script>
 </body>
 </html>

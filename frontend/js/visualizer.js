@@ -27,6 +27,7 @@ let isGenerating = false;
 let generationRequest = 0;
 let benchmarkData = null;
 
+//
 function renderHuffmanTree(treeData) {
     const container = d3.select("#tree-container");
     container.selectAll("*").remove(); // Limpiar renderizados previos
