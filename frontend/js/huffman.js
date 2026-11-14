@@ -1,3 +1,4 @@
+let ultimoResultadoHuffman = null;
 async function subirArchivoTxt() {
   const input = document.getElementById('archivoCorpus');
   const resultadosDiv = document.getElementById('resultados-compresion');
@@ -27,6 +28,11 @@ async function subirArchivoTxt() {
 
     const datos = await respuesta.json();
     const huffmanData = datos.huffman;
+    ultimoResultadoHuffman = {
+      archivoObj: archivo,
+      datos: datos,
+      huffmanData: huffmanData
+    };
 
  if (huffmanData.arbol_d3) {
         renderHuffmanTree(huffmanData.arbol_d3);
@@ -47,6 +53,9 @@ async function subirArchivoTxt() {
                 <div style="font-size: 11px; color: var(--text-dim);">
                    De ${(huffmanData?.bits_originales ?? 0).toLocaleString()} a ${(huffmanData?.bits_comprimidos ?? 0).toLocaleString()} bits
                 </div>
+                <button class="btn btn-primary" onclick="descargarArchivoComprimido('.cl')" style="margin-top: 8px; padding: 6px 12px; font-size: 12px; width: 100%; justify-content: center;">
+                    ⬇ Descargar comprimido .cl (~${Math.ceil((huffmanData?.bits_comprimidos ?? 0) / 8).toLocaleString()} bytes)
+                </button>
             </div>
         </div>
         
@@ -286,4 +295,55 @@ function renderizarArbolMST(huffmanData) {
 
     svg += `</svg>`;
     container.innerHTML = svg;
+}
+async function descargarArchivoComprimido(extension = '.huff') {
+  if (!ultimoResultadoHuffman) return;
+
+  const { archivoObj, datos, huffmanData } = ultimoResultadoHuffman;
+  const codigos = huffmanData.codigos || {};
+  const textoOriginal = await archivoObj.text();
+
+  let totalBits = 0;
+  for (let i = 0; i < textoOriginal.length; i++) {
+    const code = codigos[textoOriginal[i]];
+    if (code) totalBits += code.length;
+  }
+
+  const numBytes = Math.ceil(totalBits / 8);
+  const packedBytes = new Uint8Array(numBytes);
+
+  let byteIndex = 0;
+  let currentByte = 0;
+  let bitCount = 0;
+
+  for (let i = 0; i < textoOriginal.length; i++) {
+    const code = codigos[textoOriginal[i]];
+    if (!code) continue;
+    for (let j = 0; j < code.length; j++) {
+      currentByte = (currentByte << 1) | (code.charCodeAt(j) === 49 ? 1 : 0);
+      bitCount++;
+      if (bitCount === 8) {
+        packedBytes[byteIndex++] = currentByte;
+        currentByte = 0;
+        bitCount = 0;
+      }
+    }
+  }
+
+  if (bitCount > 0) {
+    currentByte = currentByte << (8 - bitCount);
+    packedBytes[byteIndex++] = currentByte;
+  }
+
+  const blob = new Blob([packedBytes], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+
+  const nombreBase = (datos.archivo || 'archivo').replace(/\.[^/.]+$/, '');
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${nombreBase}${extension}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
