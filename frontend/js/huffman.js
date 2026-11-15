@@ -12,6 +12,10 @@ async function subirArchivoTxt() {
   }
 
   const archivo = input.files[0];
+  if (archivo.name.toLowerCase().endsWith('.cl')) {
+    await descomprimirArchivoCl(archivo);
+    return;
+  }
   const formData = new FormData();
   formData.append('file', archivo);
 
@@ -296,7 +300,10 @@ function renderizarArbolMST(huffmanData) {
     svg += `</svg>`;
     container.innerHTML = svg;
 }
-async function descargarArchivoComprimido(extension = '.huff') {
+let ultimoTextoDescomprimido = null;
+
+// 1. Descarga el .cl guardando el diccionario adentro para poder descomprimirlo después
+async function descargarArchivoComprimido(extension = '.cl') {
   if (!ultimoResultadoHuffman) return;
 
   const { archivoObj, datos, huffmanData } = ultimoResultadoHuffman;
@@ -335,13 +342,122 @@ async function descargarArchivoComprimido(extension = '.huff') {
     packedBytes[byteIndex++] = currentByte;
   }
 
-  const blob = new Blob([packedBytes], { type: 'application/octet-stream' });
+  const headerObj = {
+    b: totalBits,
+    o: datos.tamano_original_bytes || new TextEncoder().encode(textoOriginal).length,
+    c: codigos
+  };
+  const headerBytes = new TextEncoder().encode(JSON.stringify(headerObj));
+  const headerLen = new Uint32Array([headerBytes.length]);
+
+  const blob = new Blob([headerLen, headerBytes, packedBytes], { type: 'application/octet-stream' });
   const url = URL.createObjectURL(blob);
 
   const nombreBase = (datos.archivo || 'archivo').replace(/\.[^/.]+$/, '');
   const a = document.createElement('a');
   a.href = url;
   a.download = `${nombreBase}${extension}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// 2. Lee un archivo .cl subido, reconstruye el texto original y muestra el botón para bajarlo en .txt
+async function descomprimirArchivoCl(archivoCl) {
+  const resultadosDiv = document.getElementById('resultados-compresion');
+  resultadosDiv.classList.remove('hidden');
+  resultadosDiv.innerHTML = `<span style="color: var(--cyan);">Descomprimiendo "${archivoCl.name}" y reconstruyendo archivo original...</span>`;
+
+  try {
+    const t0 = performance.now();
+    const buffer = await archivoCl.arrayBuffer();
+    if (buffer.byteLength < 8) throw new Error('Archivo .cl inválido.');
+
+    const headerLen = new DataView(buffer).getUint32(0, true);
+    const headerBytes = new Uint8Array(buffer, 4, headerLen);
+    const headerObj = JSON.parse(new TextDecoder().decode(headerBytes));
+
+    const totalBits = headerObj.b;
+    const codigos = headerObj.c || {};
+    const packedBytes = new Uint8Array(buffer, 4 + headerLen);
+
+    const raiz = {};
+    for (const [char, code] of Object.entries(codigos)) {
+      let nodo = raiz;
+      for (let i = 0; i < code.length; i++) {
+        const bit = code[i];
+        if (!nodo[bit]) nodo[bit] = {};
+        nodo = nodo[bit];
+      }
+      nodo.char = char;
+    }
+
+    const charsRecuperados = [];
+    let nodoActual = raiz;
+    let bitsLeidos = 0;
+
+    for (let i = 0; i < packedBytes.length && bitsLeidos < totalBits; i++) {
+      const byte = packedBytes[i];
+      for (let b = 7; b >= 0 && bitsLeidos < totalBits; b--) {
+        const bit = (byte >> b) & 1 ? '1' : '0';
+        nodoActual = nodoActual[bit];
+        bitsLeidos++;
+        if (nodoActual && nodoActual.char !== undefined) {
+          charsRecuperados.push(nodoActual.char);
+          nodoActual = raiz;
+        }
+      }
+    }
+
+    const textoRestaurado = charsRecuperados.join('');
+    const bytesRestaurados = new TextEncoder().encode(textoRestaurado).length;
+    const tiempoSeg = ((performance.now() - t0) / 1000).toFixed(4);
+    const nombreTxt = archivoCl.name.replace(/\.cl$/i, '') + '_descomprimido.txt';
+
+    ultimoTextoDescomprimido = {
+      nombre: nombreTxt,
+      contenido: textoRestaurado
+    };
+
+    resultadosDiv.innerHTML = `
+      <div style="margin-bottom: 16px; border-bottom: 1px dashed rgba(168,85,247,0.3); padding-bottom: 12px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="color: var(--purple-pale); font-weight: bold;">Archivo comprimido:</span> ${archivoCl.name} (${archivoCl.size.toLocaleString()} bytes)<br>
+          <span style="color: var(--purple-pale); font-weight: bold;">Tamaño restaurado:</span> ${bytesRestaurados.toLocaleString()} bytes (100% íntegro)<br>
+          <span style="color: var(--purple-pale); font-weight: bold;">Estado:</span> Descomprimido exitosamente con Árbol de Huffman<br>
+          <span style="color: var(--purple-pale); font-weight: bold;">Tiempo de descompresión:</span> ${tiempoSeg} segundos
+        </div>
+        <div style="text-align: right; background: rgba(6, 182, 212, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(6, 182, 212, 0.3);">
+          <div style="color: var(--cyan); font-weight: bold; font-size: 15px;">Archivo Restaurado</div>
+          <div style="font-size: 11px; color: var(--text-dim);">
+            De ${archivoCl.size.toLocaleString()} a ${bytesRestaurados.toLocaleString()} bytes
+          </div>
+          <button class="btn btn-play" onclick="descargarTxtRestaurado()" style="margin-top: 8px; padding: 6px 12px; font-size: 12px; width: 100%; justify-content: center;">
+            ⬇ Descargar .txt original (${bytesRestaurados.toLocaleString()} bytes)
+          </button>
+        </div>
+      </div>
+
+      <div style="background: rgba(28, 16, 53, 0.5); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border);">
+        <strong style="color: var(--purple-pale);">Vista previa del texto recuperado (Primeros 600 caracteres)</strong>
+        <pre style="margin-top: 10px; white-space: pre-wrap; word-break: break-word; color: var(--text-muted); font-size: 12px; line-height: 1.5; max-height: 220px; overflow-y: auto;">${textoRestaurado.slice(0, 600).replace(/</g, '<')}${textoRestaurado.length > 600 ? '...' : ''}</pre>
+      </div>
+    `;
+  } catch (err) {
+    console.error('Error al descomprimir:', err);
+    resultadosDiv.innerHTML = '<span style="color: #fb7185;">Error al descomprimir el archivo .cl. Descarga un archivo .cl nuevo y vuelve a intentarlo.</span>';
+  }
+}
+
+// 3. Descarga el archivo .txt ya descomprimido a tu computadora
+function descargarTxtRestaurado() {
+  if (!ultimoTextoDescomprimido) return;
+  const blob = new Blob([ultimoTextoDescomprimido.contenido], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = ultimoTextoDescomprimido.nombre;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

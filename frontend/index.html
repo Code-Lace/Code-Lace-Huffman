@@ -244,11 +244,11 @@
             </div>
 
             <label style="font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">
-              2. O selecciona un archivo .txt local
+             2. O selecciona un archivo local (.txt para comprimir / .cl para descomprimir)
             </label>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <!-- Agregamos el evento onchange -->
-            <input type="file" id="archivoCorpus" accept=".txt" onchange="subirArchivoTxt()" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
+            <input type="file" id="archivoCorpus" accept=".txt,.cl" onchange="subirArchivoTxt()" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
   
        <!-- Puedes mantener el botón como alternativa o eliminarlo -->
   <button class="btn btn-primary" onclick="subirArchivoTxt()">Procesar Texto</button>
