@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Code Lace - Análisis de Algoritmos</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="app-root">
@@ -230,12 +232,16 @@
               Selecciona un archivo de texto o corpus de pruebas (Project Gutenberg) para ejecutar la técnica voraz de Huffman, generar la codificación binaria óptima y calcular las métricas de compresión.
             </p>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-              <input type="file" id="archivoCorpus" accept=".txt" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
-              <button class="btn btn-primary" onclick="subirArchivoTxt()">Procesar Texto</button>
+            <!-- Agregamos el evento onchange -->
+            <input type="file" id="archivoCorpus" accept=".txt" onchange="subirArchivoTxt()" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
+  
+       <!-- Puedes mantener el botón como alternativa o eliminarlo -->
+  <button class="btn btn-primary" onclick="subirArchivoTxt()">Procesar Texto</button>
             </div>
             
             <div id="resultados-compresion" class="hidden" style="margin-top: 20px; font-family: var(--font-mono); background: var(--bg-2); padding: 16px; border-radius: 10px; border: 1px solid var(--card-border); color: var(--text); font-size: 15px; line-height: 1.6;">
             </div>
+            <div id="resultados-compresion" class="hidden" style="margin-top: 20px; font-family: var(--font-mono); background: var(--bg-2); padding: 16px; border-radius: 10px; border: 1px solid var(--card-border); color: var(--text); font-size: 13px; line-height: 1.6;"></div>
           </div>
         </div>
       </main>

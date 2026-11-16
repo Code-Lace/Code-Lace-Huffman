@@ -69,6 +69,10 @@ body {
   display: none !important;
 }
 
+.node circle { fill: #fff; stroke: #3b82f6; stroke-width: 3px; }
+.node text { font: 12px sans-serif; }
+.link { fill: none; stroke: #cbd5e1; stroke-width: 2px; }
+
 /* Utilidades de color para iconos */
 .text-purple-200 { color: #e9d5ff; }
 .text-purple-300 { color: #d8b4fe; }

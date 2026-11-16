@@ -11,6 +11,7 @@ from algorithms.huffman import comprimir_huffman
 from algorithms import BubbleSort, Exchange_sort, Gnome_sort, Insertion_sort
 from algorithms import MergeSort, QuickSort, SelectionSort, StoogeSort
 from algorithms.trace_utils import get_display_source
+from algorithms.huffman import build_huffman_tree, tree_to_dict
 
 
 app = FastAPI(title="Code & Lace Backend", version="1.0")
@@ -27,6 +28,21 @@ app.add_middleware(
 class SortRequest(BaseModel):
     data: list[int]
 
+class HuffmanRequest(BaseModel):
+    text: str
+
+@app.post("/api/huffman")
+def generate_huffman(request: HuffmanRequest):
+    # 1. Generar el árbol con tu algoritmo
+    root_node, codes = build_huffman_tree(request.text)
+    
+    # 2. Convertir el árbol a formato jerárquico para D3.js
+    d3_tree_data = tree_to_dict(root_node)
+    
+    return {
+        "tree": d3_tree_data,
+        "codes": codes
+    }
 
 SORTERS = {
     "bubble": (BubbleSort.bubble_sort, BubbleSort),
