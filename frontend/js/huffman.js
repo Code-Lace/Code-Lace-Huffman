@@ -12,6 +12,10 @@ async function subirArchivoTxt() {
   }
 
   const archivo = input.files[0];
+  if (archivo.name.toLowerCase().endsWith('.cl')) {
+    await descomprimirArchivoCl(archivo);
+    return;
+  }
   const formData = new FormData();
   formData.append('file', archivo);
 
@@ -296,7 +300,10 @@ function renderizarArbolMST(huffmanData) {
     svg += `</svg>`;
     container.innerHTML = svg;
 }
-async function descargarArchivoComprimido(extension = '.huff') {
+let ultimoTextoDescomprimido = null;
+
+// 1. Descarga el .cl guardando el diccionario adentro para poder descomprimirlo después
+async function descargarArchivoComprimido(extension = '.cl') {
   if (!ultimoResultadoHuffman) return;
 
   const { archivoObj, datos, huffmanData } = ultimoResultadoHuffman;
@@ -335,7 +342,15 @@ async function descargarArchivoComprimido(extension = '.huff') {
     packedBytes[byteIndex++] = currentByte;
   }
 
-  const blob = new Blob([packedBytes], { type: 'application/octet-stream' });
+  const headerObj = {
+    b: totalBits,
+    o: datos.tamano_original_bytes || new TextEncoder().encode(textoOriginal).length,
+    c: codigos
+  };
+  const headerBytes = new TextEncoder().encode(JSON.stringify(headerObj));
+  const headerLen = new Uint32Array([headerBytes.length]);
+
+  const blob = new Blob([headerLen, headerBytes, packedBytes], { type: 'application/octet-stream' });
   const url = URL.createObjectURL(blob);
 
   const nombreBase = (datos.archivo || 'archivo').replace(/\.[^/.]+$/, '');
@@ -346,4 +361,220 @@ async function descargarArchivoComprimido(extension = '.huff') {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// 2. Lee un archivo .cl subido, reconstruye el texto original y muestra el botón para bajarlo en .txt
+async function descomprimirArchivoCl(archivoCl) {
+  const resultadosDiv = document.getElementById('resultados-compresion');
+  resultadosDiv.classList.remove('hidden');
+  resultadosDiv.innerHTML = `<span style="color: var(--cyan);">Descomprimiendo "${archivoCl.name}" y reconstruyendo archivo original...</span>`;
+
+  try {
+    const t0 = performance.now();
+    const buffer = await archivoCl.arrayBuffer();
+    if (buffer.byteLength < 8) throw new Error('Archivo .cl inválido.');
+
+    const headerLen = new DataView(buffer).getUint32(0, true);
+    const headerBytes = new Uint8Array(buffer, 4, headerLen);
+    const headerObj = JSON.parse(new TextDecoder().decode(headerBytes));
+
+    const totalBits = headerObj.b;
+    const codigos = headerObj.c || {};
+    const packedBytes = new Uint8Array(buffer, 4 + headerLen);
+
+    const raiz = {};
+    for (const [char, code] of Object.entries(codigos)) {
+      let nodo = raiz;
+      for (let i = 0; i < code.length; i++) {
+        const bit = code[i];
+        if (!nodo[bit]) nodo[bit] = {};
+        nodo = nodo[bit];
+      }
+      nodo.char = char;
+    }
+
+    const charsRecuperados = [];
+    let nodoActual = raiz;
+    let bitsLeidos = 0;
+
+    for (let i = 0; i < packedBytes.length && bitsLeidos < totalBits; i++) {
+      const byte = packedBytes[i];
+      for (let b = 7; b >= 0 && bitsLeidos < totalBits; b--) {
+        const bit = (byte >> b) & 1 ? '1' : '0';
+        nodoActual = nodoActual[bit];
+        bitsLeidos++;
+        if (nodoActual && nodoActual.char !== undefined) {
+          charsRecuperados.push(nodoActual.char);
+          nodoActual = raiz;
+        }
+      }
+    }
+
+    const textoRestaurado = charsRecuperados.join('');
+    const bytesRestaurados = new TextEncoder().encode(textoRestaurado).length;
+    const tiempoSeg = ((performance.now() - t0) / 1000).toFixed(4);
+    const nombreTxt = archivoCl.name.replace(/\.cl$/i, '') + '_descomprimido.txt';
+
+    ultimoTextoDescomprimido = {
+      nombre: nombreTxt,
+      contenido: textoRestaurado
+    };
+
+    resultadosDiv.innerHTML = `
+      <div style="margin-bottom: 16px; border-bottom: 1px dashed rgba(168,85,247,0.3); padding-bottom: 12px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="color: var(--purple-pale); font-weight: bold;">Archivo comprimido:</span> ${archivoCl.name} (${archivoCl.size.toLocaleString()} bytes)<br>
+          <span style="color: var(--purple-pale); font-weight: bold;">Tamaño restaurado:</span> ${bytesRestaurados.toLocaleString()} bytes (100% íntegro)<br>
+          <span style="color: var(--purple-pale); font-weight: bold;">Estado:</span> Descomprimido exitosamente con Árbol de Huffman<br>
+          <span style="color: var(--purple-pale); font-weight: bold;">Tiempo de descompresión:</span> ${tiempoSeg} segundos
+        </div>
+        <div style="text-align: right; background: rgba(6, 182, 212, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(6, 182, 212, 0.3);">
+          <div style="color: var(--cyan); font-weight: bold; font-size: 15px;">Archivo Restaurado</div>
+          <div style="font-size: 11px; color: var(--text-dim);">
+            De ${archivoCl.size.toLocaleString()} a ${bytesRestaurados.toLocaleString()} bytes
+          </div>
+          <button class="btn btn-play" onclick="descargarTxtRestaurado()" style="margin-top: 8px; padding: 6px 12px; font-size: 12px; width: 100%; justify-content: center;">
+            ⬇ Descargar .txt original (${bytesRestaurados.toLocaleString()} bytes)
+          </button>
+        </div>
+      </div>
+
+      <div style="background: rgba(28, 16, 53, 0.5); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border);">
+        <strong style="color: var(--purple-pale);">Vista previa del texto recuperado (Primeros 600 caracteres)</strong>
+        <pre style="margin-top: 10px; white-space: pre-wrap; word-break: break-word; color: var(--text-muted); font-size: 12px; line-height: 1.5; max-height: 220px; overflow-y: auto;">${textoRestaurado.slice(0, 600).replace(/</g, '<')}${textoRestaurado.length > 600 ? '...' : ''}</pre>
+      </div>
+    `;
+  } catch (err) {
+    console.error('Error al descomprimir:', err);
+    resultadosDiv.innerHTML = '<span style="color: #fb7185;">Error al descomprimir el archivo .cl. Descarga un archivo .cl nuevo y vuelve a intentarlo.</span>';
+  }
+}
+
+// 3. Descarga el archivo .txt ya descomprimido a tu computadora
+function descargarTxtRestaurado() {
+  if (!ultimoTextoDescomprimido) return;
+  const blob = new Blob([ultimoTextoDescomprimido.contenido], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = ultimoTextoDescomprimido.nombre;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+// ===== Buscador e importador directo de Project Gutenberg =====
+async function buscarLibrosGutenberg() {
+  const queryInput = document.getElementById('gutenberg-query');
+  const resultsDiv = document.getElementById('gutenberg-results');
+  const query = queryInput ? queryInput.value.trim() : '';
+
+  if (!query) return;
+
+  resultsDiv.classList.remove('hidden');
+  resultsDiv.innerHTML = '<span style="color: var(--text-muted); font-size: 12px;">Buscando libros en el catálogo de Project Gutenberg...</span>';
+
+  try {
+    // 1. Buscamos en la API rápida de Open Library filtrando libros con ID de Project Gutenberg
+    const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query + ' id_project_gutenberg:*')}&fields=title,author_name,id_project_gutenberg&limit=15`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Error en Open Library');
+    const data = await res.json();
+
+    const libros = [];
+    const vistos = new Set();
+
+    for (const doc of (data.docs || [])) {
+      const ids = doc.id_project_gutenberg || [];
+      for (const rawId of ids) {
+        const cleanId = String(rawId).replace(/\D/g, '');
+        if (cleanId && !vistos.has(cleanId)) {
+          vistos.add(cleanId);
+          libros.push({
+            id: cleanId,
+            title: doc.title || `Libro #${cleanId}`,
+            author: (doc.author_name && doc.author_name[0]) ? doc.author_name[0] : 'Project Gutenberg'
+          });
+          break;
+        }
+      }
+      if (libros.length >= 8) break;
+    }
+
+    if (libros.length === 0) {
+      resultsDiv.innerHTML = '<span style="color: #fb7185; font-size: 12px;">No se encontraron libros en Project Gutenberg para esa búsqueda.</span>';
+      return;
+    }
+
+    resultsDiv.innerHTML = libros.map(book => {
+      const tituloSeguro = book.title.replace(/\\/g, '').replace(/'/g, "\\'").replace(/"/g, '"');
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; background: rgba(19, 13, 36, 0.85); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(168, 85, 247, 0.2);">
+          <div style="overflow: hidden;">
+            <div style="color: var(--purple-pale); font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${tituloSeguro}">${book.title}</div>
+            <div style="color: var(--text-dim); font-size: 11px;">${book.author} · Gutenberg ID #${book.id}</div>
+          </div>
+          <button type="button" class="btn btn-play" style="padding: 6px 12px; font-size: 11px; flex-shrink: 0;" onclick="seleccionarYComprimirGutenberg('${book.id}', '${tituloSeguro}')">
+            Seleccionar y Comprimir
+          </button>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+    resultsDiv.innerHTML = '<span style="color: #fb7185; font-size: 12px;">Error al conectar con el catálogo de Project Gutenberg.</span>';
+  }
+}
+
+async function seleccionarYComprimirGutenberg(bookId, bookTitle) {
+  const resultadosDiv = document.getElementById('resultados-compresion');
+  const input = document.getElementById('archivoCorpus');
+
+  resultadosDiv.classList.remove('hidden');
+  resultadosDiv.innerHTML = `<span style="color: var(--cyan);">Descargando "${bookTitle}" (ID #${bookId}) desde Project Gutenberg y preparando compresión...</span>`;
+
+  const urlsGutenberg = [
+    `https://www.gutenberg.org/cache/epub/${bookId}/pg${bookId}.txt`,
+    `https://www.gutenberg.org/files/${bookId}/${bookId}-0.txt`,
+    `https://www.gutenberg.org/files/${bookId}/${bookId}.txt`
+  ];
+
+  const generarProxies = (targetUrl) => [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
+    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+  ];
+
+  let textoLibro = null;
+
+  for (const targetUrl of urlsGutenberg) {
+    for (const proxyUrl of generarProxies(targetUrl)) {
+      try {
+        const res = await fetch(proxyUrl);
+        if (res.ok) {
+          const txt = await res.text();
+          if (txt && txt.length > 500 && !txt.trim().startsWith('<!DOCTYPE') && !txt.trim().startsWith('<html')) {
+            textoLibro = txt;
+            break;
+          }
+        }
+      } catch (e) {}
+    }
+    if (textoLibro) break;
+  }
+
+  if (!textoLibro) {
+    resultadosDiv.innerHTML = '<span style="color: #fb7185;">No se pudo descargar el archivo .txt de este ejemplar. Prueba seleccionando otra edición de la lista.</span>';
+    return;
+  }
+
+  const slug = bookTitle.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 30) || `gutenberg_${bookId}`;
+  const nombreArchivo = `${slug}.txt`;
+  const archivoVirtual = new File([textoLibro], nombreArchivo, { type: 'text/plain;charset=utf-8' });
+
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(archivoVirtual);
+  input.files = dataTransfer.files;
+
+  await subirArchivoTxt();
 }

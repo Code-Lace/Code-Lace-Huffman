@@ -231,9 +231,24 @@
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; line-height: 1.5;">
               Selecciona un archivo de texto o corpus de pruebas (Project Gutenberg) para ejecutar la técnica voraz de Huffman, generar la codificación binaria óptima y calcular las métricas de compresión.
             </p>
+            <!-- Buscador directo de Project Gutenberg -->
+            <div style="background: rgba(124, 58, 237, 0.1); padding: 14px; border-radius: 10px; border: 1px solid rgba(168, 85, 247, 0.3); margin-bottom: 16px;">
+              <label style="font-size: 11px; font-weight: 700; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">
+                1. Buscar libro directo en Project Gutenberg
+              </label>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="gutenberg-query" placeholder="Ej. Alice in Wonderland, Don Quijote, Dracula, Frankenstein..." onkeydown="if(event.key==='Enter') buscarLibrosGutenberg()" style="flex: 1; min-width: 220px; background: var(--bg); color: var(--text); border: 1px solid var(--card-border); padding: 10px 12px; border-radius: 8px; font-family: var(--font-body); font-size: 13px;">
+                <button type="button" class="btn btn-primary" onclick="buscarLibrosGutenberg()">Buscar en Gutenberg</button>
+              </div>
+              <div id="gutenberg-results" class="hidden" style="margin-top: 12px; display: grid; gap: 8px; max-height: 240px; overflow-y: auto; padding-right: 4px;"></div>
+            </div>
+
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">
+             2. O selecciona un archivo local (.txt para comprimir / .cl para descomprimir)
+            </label>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <!-- Agregamos el evento onchange -->
-            <input type="file" id="archivoCorpus" accept=".txt" onchange="subirArchivoTxt()" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
+            <input type="file" id="archivoCorpus" accept=".txt,.cl" onchange="subirArchivoTxt()" style="color: var(--text); background: var(--surface-2); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
   
        <!-- Puedes mantener el botón como alternativa o eliminarlo -->
   <button class="btn btn-primary" onclick="subirArchivoTxt()">Procesar Texto</button>
