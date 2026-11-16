@@ -40,7 +40,7 @@ async function subirArchivoTxt() {
             </div>
             <div style="text-align: right; background: rgba(74, 222, 128, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(74, 222, 128, 0.3);">
                 <div style="color: var(--green); font-weight: bold; font-size: 15px;">${huffmanData.tasa_compresion}</div>
-                <div style="font-size: 11px; color: var(--text-dim);">
+                <div style="font-size: 13px; color: var(--text-dim);">
                     De ${huffmanData.bits_originales.toLocaleString()} a ${huffmanData.bits_comprimidos.toLocaleString()} bits
                 </div>
             </div>
@@ -74,7 +74,7 @@ async function subirArchivoTxt() {
         
         <div style="background: rgba(28, 16, 53, 0.5); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border);">
             <strong style="color: var(--purple-pale);">5. Fragmento Codificado (Primeros 500 bits)</strong>
-            <p style="margin-top: 10px; word-break: break-all; color: var(--text-muted); font-size: 12px; line-height: 1.6; letter-spacing: 0.5px;">
+            <p style="margin-top: 10px; word-break: break-all; color: var(--text-muted); font-size: 14px; line-height: 1.6; letter-spacing: 0.5px;">
                 ${huffmanData.texto_codificado}...
             </p>
         </div>
