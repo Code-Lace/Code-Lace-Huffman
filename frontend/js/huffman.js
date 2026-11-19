@@ -63,7 +63,7 @@ async function subirArchivoTxt() {
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px; margin-bottom: 16px;">
             <div style="background: rgba(28, 16, 53, 0.5); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border);">
                 <strong style="color: var(--purple-pale);">1. Frecuencias (Nodos: ${huffmanData.nodos_unicos})</strong>
                 <div style="margin-top: 8px; max-height: 180px; overflow-y: auto; padding-right: 5px;">
@@ -294,7 +294,7 @@ function renderizarArbolMST(huffmanData) {
         
         const charLabel = char === '\n' ? '\\n' : char === '\r' ? '\\r' : char;
         svg += `<text x="${nodeX}" y="${nodeY - 3}" fill="var(--green)" font-size="10" font-weight="bold" font-family="Outfit" text-anchor="middle">'${charLabel}'</text>`;
-        svg += `<text x="${nodeX}" y="${nodeY + 10}" fill="var(--text-dim)" font-size="8" font-family="Outfit" text-anchor="middle">${freq}</text>`;
+        svg += `<text x="${nodeX}" y="${nodeY + 10}" fill="#ffffff" font-size="8" font-family="Outfit" text-anchor="middle">${freq}</text>`;
     });
 
     svg += `</svg>`;
