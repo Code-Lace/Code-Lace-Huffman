@@ -1,39 +1,19 @@
-# Formato propietario `.cl`
+# Formato `.cl`
 
-Los archivos `.cl` descargados desde la interfaz contienen todos los datos necesarios para verificar e interpretar la compresión Huffman.
+El comparador guarda el diccionario de Huffman y los datos comprimidos en el mismo archivo para recuperar el texto desde el navegador.
 
-## Layout binario
-
-Todos los números enteros se almacenan en formato **big-endian**:
-
-| Offset | Tamaño | Campo |
+| Posición en bytes | Tamaño | Campo |
 |---|---:|---|
-| 0 | 7 bytes | Magic `CLHUFF1` |
-| 7 | 4 bytes | Cantidad de bytes originales (UTF-8) |
-| 11 | 4 bytes | Cantidad de bits válidos |
-| 15 | 4 bytes | Longitud de la tabla de códigos |
-| 19 | variable | Tabla de códigos JSON UTF-8 |
-| variable | `ceil(bits_validos / 8)` bytes | Payload Huffman |
-| final | 4 bytes | CRC32 IEEE (tabla + payload) |
+| 0 | 4 bytes | Longitud del encabezado JSON como entero de 32 bits sin signo. El lector lo interpreta en orden little-endian. |
+| 4 | Longitud del encabezado | Encabezado JSON codificado en UTF-8. |
+| 4 + longitud del encabezado | Hasta el final del archivo | Bits de Huffman empaquetados en bytes. |
 
-La tabla JSON corresponde a un objeto `{"caracter": "codigo"}`. Los códigos contienen únicamente `0` y `1`. El relleno final del último byte se completa con ceros y no forma parte del contenido según `bits_validos`.
+El encabezado JSON contiene tres campos.
 
-## Integridad
+| Campo | Contenido |
+|---|---|
+| `b` | Número de bits válidos de los datos comprimidos. |
+| `o` | Tamaño original informado por el backend. Si falta o es cero, el frontend usa el tamaño del texto en bytes UTF-8. |
+| `c` | Diccionario que asigna a cada carácter su código binario. |
 
-El CRC32 cubre el magic, el encabezado, la tabla de códigos y el payload, pero no incluye el propio campo CRC. El emisor debe calcularlo sobre los bytes desde el offset 0 hasta el inicio del CRC.
-
-Para verificar un archivo:
-
-1. Confirmar que los 7 primeros bytes sean `CLHUFF1`.
-2. Leer original length, valid bits y table length.
-3. Validar que tabla, payload y CRC estén dentro del archivo.
-4. Decodificar el JSON UTF-8.
-5. Calcular el CRC32 del contenido y compararlo con el CRC final.
-6. Decodificar exactamente `valid bits` usando la tabla.
-
-## Ejemplo de uso previsto
-
-```text
-entrada.txt -> análisis UTF-8 -> códigos Huffman -> entrada.cl
-entrada.cl  -> validar encabezado/CRC -> tabla Huffman -> texto recuperado
-```
+El lector reconstruye el árbol con `c`, recorre cada byte desde el bit más significativo y procesa hasta `b` bits. Si el último byte se completa con ceros, esos bits de relleno quedan fuera de `b`. El formato carece de suma de comprobación. Para verificar el resultado, compara el texto descargado con el archivo original.

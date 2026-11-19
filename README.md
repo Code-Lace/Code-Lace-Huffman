@@ -31,7 +31,7 @@ El benchmark compara siete algoritmos sobre tamaños de 10 a 100 elementos y tam
 - Construcción del árbol Huffman y generación de códigos binarios.
 - Visualización del árbol binario y frecuencias de caracteres.
 - Cálculo de bytes/bits originales y comprimidos.
-- Descarga del resultado en formato `.cl`.
+- Descarga del resultado en formato `.cl` y recuperación del texto como `.txt` desde el comparador.
 - Visualización auxiliar relacionada con MST/árboles.
 
 La especificación completa del archivo `.cl` está en [docs/FORMATO_CL.md](docs/FORMATO_CL.md).
@@ -95,30 +95,13 @@ Abrir `http://127.0.0.1:5500`.
 
 Por defecto, la configuración de JavaScript usa el backend desplegado en Render. Para usar el backend local, cambiar `API_BASE_URL` en `frontend/index.html` y/o ajustar la URL directa usada por `frontend/js/huffman.js`.
 
-## Pruebas e integridad
+## Pruebas
 
-Las verificaciones automatizadas están en [tests/test_project.py](tests/test_project.py). El procedimiento y las categorías cubiertas están documentados en [evidence/PRUEBAS.md](evidence/PRUEBAS.md).
-
-Ejecutar:
-
-```bash
-python3 -m unittest discover -s tests -v
-```
-
-Las pruebas verifican los ocho ordenamientos, Huffman y el layout/CRC de los archivos `.cl`.
+Consulta [evidence/PRUEBAS.md](evidence/PRUEBAS.md) para comprobar la compresión y la descompresión desde el comparador y conocer el estado de la suite automatizada.
 
 ## Formato `.cl`
 
-El archivo exportado incluye:
-
-- magic `CLHUFF1`;
-- longitud original en bytes UTF-8;
-- cantidad de bits válidos;
-- tabla de códigos Huffman;
-- payload binario Huffman;
-- CRC32 IEEE para integridad.
-
-No confundir el tamaño comprimido mostrado con el tamaño bruto del payload: el archivo `.cl` también contiene metadatos y el CRC.
+El archivo incluye la longitud del encabezado, un encabezado JSON con el diccionario de Huffman y los bits comprimidos. El tamaño del archivo incluye esos metadatos además de los datos comprimidos. Consulta la [especificación del formato](docs/FORMATO_CL.md).
 
 ## Equipo
 
