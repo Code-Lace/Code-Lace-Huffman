@@ -298,6 +298,17 @@ function renderizarArbolMST(huffmanData) {
     svg += `</svg>`;
     container.innerHTML = svg;
 }
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit++) {
+      crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
 async function descargarArchivoComprimido(extension = '.huff') {
   if (!ultimoResultadoHuffman) return;
 
@@ -337,7 +348,29 @@ async function descargarArchivoComprimido(extension = '.huff') {
     packedBytes[byteIndex++] = currentByte;
   }
 
-  const blob = new Blob([packedBytes], { type: 'application/octet-stream' });
+  // Formato .cl: CLHUFF1 + tamaño original + bits válidos + tabla UTF-8 + payload + CRC32.
+  const encoder = new TextEncoder();
+  const tableBytes = encoder.encode(JSON.stringify(codigos));
+  const originalBytes = encoder.encode(textoOriginal);
+  const header = new ArrayBuffer(15);
+  const view = new DataView(header);
+  view.setUint8(0, 67); view.setUint8(1, 76); view.setUint8(2, 72);
+  view.setUint8(3, 85); view.setUint8(4, 70); view.setUint8(5, 70);
+  view.setUint8(6, 49);
+  view.setUint32(7, originalBytes.length, false);
+  view.setUint32(11, totalBits, false);
+
+  const formatBytes = new Uint8Array(15 + 4 + tableBytes.length + packedBytes.length + 4);
+  formatBytes.set(new Uint8Array(header), 0);
+  new DataView(formatBytes.buffer).setUint32(15, tableBytes.length, false);
+  formatBytes.set(tableBytes, 19);
+  formatBytes.set(packedBytes, 19 + tableBytes.length);
+
+  const crcBody = formatBytes.subarray(0, 19 + tableBytes.length + packedBytes.length);
+  const crc = crc32(crcBody);
+  new DataView(formatBytes.buffer).setUint32(19 + tableBytes.length + packedBytes.length, crc, false);
+
+  const blob = new Blob([formatBytes], { type: 'application/octet-stream' });
   const url = URL.createObjectURL(blob);
 
   const nombreBase = (datos.archivo || 'archivo').replace(/\.[^/.]+$/, '');

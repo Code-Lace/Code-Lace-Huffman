@@ -1,16 +1,18 @@
-# Code & Lace 
+# Code & Lace
 
-## Objetivo
-El objetivo de nuestro proyecto es proporcionar una plataforma web interactiva diseñada para visualizar y comprender el funcionamiento de los algoritmos de ordenamiento mediante animaciones paso a paso. Buscamos facilitar el estudio de estructuras de datos mostrando gráficamente cómo se comparan y cambian de posición los elementos.
+Plataforma web interactiva para estudiar algoritmos de ordenamiento y compresión mediante visualizaciones, métricas y animaciones paso a paso.
 
-## Características Principales
+## Funcionalidades
 
-- **Visualización animada:** Observa el comportamiento de algoritmos de ordenamiento iteración por iteración.
-- **Interfaz web responsiva:** Diseño limpio y accesible para ejecutar las pruebas de ordenamiento directamente en el navegador.
-- **Control de ejecución:** Pausa, reanuda o ajusta la velocidad de las animaciones para analizar el código a tu propio ritmo.
-## Algoritmos Implementados
+### Visualizador de ordenamiento
 
-Nuestra plataforma permite visualizar los siguientes métodos de ordenamiento:
+- Visualización animada con barras.
+- Ejecución paso a paso, pausa, retroceso, reinicio y ajuste de velocidad.
+- Comparación simultánea de dos algoritmos.
+- Código Python asociado resaltado según el paso actual.
+- Comparación de complejidad teórica y medición de tiempo.
+
+### Algoritmos implementados
 
 - Gnome Sort
 - Exchange Sort
@@ -19,38 +21,111 @@ Nuestra plataforma permite visualizar los siguientes métodos de ordenamiento:
 - Selection Sort
 - Insertion Sort
 - Merge Sort
+- Stooge Sort
 
-## Tecnologías y Herramientas Utilizadas
+El benchmark compara siete algoritmos sobre tamaños de 10 a 100 elementos y también mide entrada ordenada, aleatoria e inversa con 100 elementos. Stooge Sort no forma parte del benchmark automático debido a su costo.
 
-**Lenguajes y Lógica:**
-- **Frontend:** HTML y CSS para estructurar y dar una buena interacción y diseño a la página web.
-- **Backend / Lógica:** Python para asegurar que los algoritmos de ordenamiento funcionen de manera correcta y eficiente.
+### Módulo Huffman
 
-**Software y Entornos:**
-- **Figma:** Para diseñar los bocetos y prototipos de la interfaz web.
-- **Visual Studio Code:** Como entorno de desarrollo principal para escribir y probar el código.
-- **GitHub:** Como columna vertebral para el control de versiones y la integración de cambios de los cuatro integrantes en sus respectivas ramas.
+- Lectura de archivos `.txt`, preferentemente de corpora como Project Gutenberg.
+- Construcción del árbol Huffman y generación de códigos binarios.
+- Visualización del árbol binario y frecuencias de caracteres.
+- Cálculo de bytes/bits originales y comprimidos.
+- Descarga del resultado en formato `.cl`.
+- Visualización auxiliar relacionada con MST/árboles.
 
-## Equipo de Desarrollo
+La especificación completa del archivo `.cl` está en [docs/FORMATO_CL.md](docs/FORMATO_CL.md).
 
-La distribución del trabajo en el proyecto está organizada de la siguiente manera:
+## Arquitectura
 
-* **Marlene Lares y Liliana Mejía:** Frontend y Diseño de UI.
-* **Camila Suárez y Bruno Salazar:** Gestión de Repositorio en GitHub.
-* **Todo el equipo:** Desarrollo conjunto del Backend y la Lógica de Algoritmos.
+```text
+frontend/
+  index.html
+  styles.css
+  js/
+    visualizer.js
+    huffman.js
 
-## Uso de la IA
-Durante el desarrollo de **Code & Lace**, el equipo utilizó herramientas de Inteligencia Artificial (Claude, Gemini) como apoyo complementario para optimizar el flujo de trabajo en las siguientes áreas:
+backend/
+  main.py
+  requirements.txt
+  algorithms/
+    *.py
+```
 
-* **Depuración de Código (Debugging):** Apoyo para identificar y solucionar errores de sintaxis, así como para optimizar fragmentos de código en HTML, CSS y Python.
-* **Lógica de Algoritmos:** Consultas puntuales para reforzar la comprensión y asegurar la implementación correcta de la lógica detrás de los algoritmos de ordenamiento.
-* **Diseño y Estructura:** Generación de ideas y sugerencias de paletas de colores o distribución de elementos visuales que posteriormente se implementaron en Figma.
-## Como ejecutar
-* **Con vercel se inicia tanto el proyecto como el deployment para la página vinculándolo con GitHub
+- **Frontend:** HTML, CSS y JavaScript con D3.js para los gráficos.
+- **Backend:** Python 3 con FastAPI y Uvicorn.
+- **Despliegue frontend:** Vercel.
+- **Despliegue backend:** Render.
 
-## Conclusiones
-A través de este proyecto se alcanzaron los siguientes puntos clave:
+## API
 
-- **Comprensión visual de algoritmos:** Se logró transformar el comportamiento interno de siete métodos de ordenamiento en representaciones gráficas paso a paso, reduciendo la brecha entre el análisis teórico y la práctica.
-- **Integración full-stack:** Se articuló de manera efectiva el diseño y la maquetación web en el frontend (HTML/CSS) con la lógica computacional implementada en Python para el procesamiento de los algoritmos.
-- **Flujo de trabajo colaborativo:** El uso coordinado de Git y GitHub permitió una gestión organizada de versiones y ramas de trabajo entre los cuatro integrantes, garantizando la trazabilidad de los componentes desarrollados.
+| Método | Ruta | Uso |
+|---|---|---|
+| `POST` | `/api/sort/{algorithm}` | Ejecuta un algoritmo |
+| `POST` | `/api/visualize/{algorithm}` | Genera el arreglo ordenado y los pasos |
+| `GET` | `/api/benchmark` | Obtiene series y escenarios de rendimiento |
+| `POST` | `/api/huffman` | Construye el árbol y códigos desde texto |
+| `POST` | `/api/comprimir` | Procesa un archivo `.txt` |
+
+`algorithm` admite: `bubble`, `selection`, `insertion`, `exchange`, `gnome`, `stooge`, `merge` y `quick`.
+
+## Ejecución local
+
+### Backend
+
+```bash
+cd backend
+python3 -m pip install -r requirements.txt
+python3 -m uvicorn main:app --reload
+```
+
+El backend queda disponible en `http://127.0.0.1:8000`. La documentación interactiva está en `http://127.0.0.1:8000/docs`.
+
+### Frontend
+
+El frontend puede servirse con un servidor estático desde la carpeta `frontend`:
+
+```bash
+cd frontend
+python3 -m http.server 5500
+```
+
+Abrir `http://127.0.0.1:5500`.
+
+Por defecto, la configuración de JavaScript usa el backend desplegado en Render. Para usar el backend local, cambiar `API_BASE_URL` en `frontend/index.html` y/o ajustar la URL directa usada por `frontend/js/huffman.js`.
+
+## Pruebas e integridad
+
+Las verificaciones automatizadas están en [tests/test_project.py](tests/test_project.py). El procedimiento y las categorías cubiertas están documentados en [evidence/PRUEBAS.md](evidence/PRUEBAS.md).
+
+Ejecutar:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+Las pruebas verifican los ocho ordenamientos, Huffman y el layout/CRC de los archivos `.cl`.
+
+## Formato `.cl`
+
+El archivo exportado incluye:
+
+- magic `CLHUFF1`;
+- longitud original en bytes UTF-8;
+- cantidad de bits válidos;
+- tabla de códigos Huffman;
+- payload binario Huffman;
+- CRC32 IEEE para integridad.
+
+No confundir el tamaño comprimido mostrado con el tamaño bruto del payload: el archivo `.cl` también contiene metadatos y el CRC.
+
+## Equipo
+
+- **Marlene Lares y Liliana Mejía:** frontend y diseño de UI.
+- **Camila Suárez y Bruno Salazar:** integración y gestión del repositorio.
+- **Todo el equipo:** backend y lógica de algoritmos.
+
+## Uso de inteligencia artificial
+
+Durante el desarrollo se utilizaron herramientas de IA como apoyo para depuración, revisión de lógica y generación de ideas de diseño. Las respuestas se revisaron e integraron manualmente en el proyecto.

@@ -17,10 +17,30 @@ def generar_codigos(nodo, prefijo="", codigos=None):
         codigos = {}
     if nodo is not None:
         if nodo.caracter is not None:
-            codigos[nodo.caracter] = prefijo
+            codigos[nodo.caracter] = prefijo or "0"
         generar_codigos(nodo.izq, prefijo + "0", codigos)
         generar_codigos(nodo.der, prefijo + "1", codigos)
     return codigos
+
+
+def build_huffman_tree(texto: str):
+    if not texto:
+        return None, {}
+
+    frecuencias = Counter(texto)
+    heap = [NodoHuffman(char, freq) for char, freq in frecuencias.items()]
+    heapq.heapify(heap)
+
+    while len(heap) > 1:
+        nodo_izq = heapq.heappop(heap)
+        nodo_der = heapq.heappop(heap)
+        nodo_fusion = NodoHuffman(None, nodo_izq.frecuencia + nodo_der.frecuencia)
+        nodo_fusion.izq = nodo_izq
+        nodo_fusion.der = nodo_der
+        heapq.heappush(heap, nodo_fusion)
+
+    raiz = heap[0]
+    return raiz, generar_codigos(raiz)
 
 def comprimir_huffman(texto: str) -> dict:
     if not texto:
@@ -53,12 +73,12 @@ def comprimir_huffman(texto: str) -> dict:
     arbol_d3 = tree_to_dict(raiz)
     texto_codificado = "".join([codigos[c] for c in texto])
 
-    bits_originales = len(texto) * 8
+    bits_originales = len(texto.encode("utf-8")) * 8
     bits_comprimidos = sum(freq * len(codigos[char]) for char, freq in frecuencias.items())
     tasa_compresion = (1 - (bits_comprimidos / bits_originales)) * 100 if bits_originales > 0 else 0
 
     return {
-        "tasa_compresion": f"{round(tasa_compresion, 2)}% de reducci",
+        "tasa_compresion": f"{round(tasa_compresion, 2)}%",
         "bits_originales": bits_originales,
         "bits_comprimidos": bits_comprimidos,
         "nodos_unicos": len(frecuencias),

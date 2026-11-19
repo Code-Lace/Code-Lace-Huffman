@@ -173,7 +173,7 @@ async def procesar_corpus(file: UploadFile = File(...)):
     
     return {
         "archivo": file.filename,
-        "tamano_original_bytes": len(texto),
+        "tamano_original_bytes": len(contenido_bytes),
         "estado": "Procesado con Huffman",
         "tiempo_ejecucion_segundos": round(tiempo_ejecucion, 4),
         "huffman": metricas_huffman # Se envía el diccionario al frontend
